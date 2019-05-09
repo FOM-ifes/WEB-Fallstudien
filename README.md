@@ -4,3 +4,5 @@
 
 In diesem kleinen Projekt soll eine kleine Kachel-Webseite erstellt werden, auf der Fallstudien gesammelt werden können.
 
+Test-Seite unter: https://fallstudien.netlify.com
+
