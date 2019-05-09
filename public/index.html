@@ -39,7 +39,7 @@ if (!doNotTrack) {
 	<body>
 		<div class="container">	
 							<header class="clearfix">
-				<h1>Fallstudiensammlung zur Datenanalyse<span>Es könnte 42 sein.</span></h1>
+				<h1>Fallstudiensammlung zur Datenanalyse<span>Es könnten 42 sein.</span></h1>
 			</header>
 			<div class="main">
 				<ul id="og-grid" class="og-grid">
@@ -51,32 +51,26 @@ if (!doNotTrack) {
 					</li>
 					
 					<li>
-						<a href="https://github.com/aerohub/hugrid" data-largesrc="images/test2.png" data-title="Fallstudie 2" data-description="A simple grid theme for Hugo. A kind of boilerplate to perform anyone or anything quickly. Portfolio, collection, bookmarks, contacts and so on." data-buttontext="">
+						<a href="https://xkcd.com/927/" data-largesrc="images/test2.png" data-title="Fallstudie 2" data-description="A simple grid theme for Hugo. A kind of boilerplate to perform anyone or anything quickly. Portfolio, collection, bookmarks, contacts and so on." data-buttontext="">
 							<img src="images/thumbs/test2-thumb.png" alt="Fallstudie &#39;2&#39;"/>
 						</a>
 					</li>
 					
 					<li>
-						<a href="https://github.com/aerohub/hugrid" data-largesrc="images/test3.png" data-title="Hugrid Theme" data-description="A simple grid theme for Hugo. A kind of boilerplate to perform anyone or anything quickly. Portfolio, collection, bookmarks, contacts and so on." data-buttontext="">
+						<a href="https://github.com/aerohub/hugrid" data-largesrc="images/test3.png" data-title="Fallstudie 3" data-description="A simple grid theme for Hugo. A kind of boilerplate to perform anyone or anything quickly. Portfolio, collection, bookmarks, contacts and so on." data-buttontext="">
 							<img src="images/thumbs/test3-thumb.png" alt="Fallstudie &#39;3&#39;"/>
 						</a>
 					</li>
 					
 					<li>
-						<a href="https://github.com/aerohub/hugrid" data-largesrc="images/test4.png" data-title="Fallstudie 3" data-description="A simple grid theme for Hugo. A kind of boilerplate to perform anyone or anything quickly. Portfolio, collection, bookmarks, contacts and so on." data-buttontext="">
+						<a href="https://github.com/aerohub/hugrid" data-largesrc="images/test4.png" data-title="Fallstudie 4" data-description="A simple grid theme for Hugo. A kind of boilerplate to perform anyone or anything quickly. Portfolio, collection, bookmarks, contacts and so on." data-buttontext="">
 							<img src="images/thumbs/test4-thumb.png" alt="Fallstudie &#39;4&#39;"/>
-						</a>
-					</li>
-					
-					<li>
-						<a href="https://github.com/aerohub/hugrid" data-largesrc="images/full/5.png" data-title="Hugrid Theme" data-description="A simple grid theme for Hugo. A kind of boilerplate to perform anyone or anything quickly. Portfolio, collection, bookmarks, contacts and so on." data-buttontext="">
-							<img src="images/thumbs/5.png" alt="Hugrid Theme"/>
 						</a>
 					</li>
 					
 				</ul>
 				<footer>			
-	Made by <a href="http://tympanus.net/codrops/2013/03/19/thumbnail-grid-with-expanding-preview/">Codrops</a>, <a href="http://gohugo.io">Hugo</a> and <a href="https://github.com/aerohub">me</a>
+	Made by <a href="https://www.fom.de/forschung/institute/ifes.html">ifes@FOM</a>, <a href="http://gohugo.io">Hugo</a> and <a href="https://github.com/aerohub">me</a>
 </footer>
 			</div>
 		</div>
@@ -351,7 +345,7 @@ if (!doNotTrack) {
 					create : function() {
 						this.$title = $( '<h3></h3>' );
 						this.$description = $( '<p></p>' );
-						this.$href = $( '<a href="#" target="_blank">Get the theme</a>' );
+						this.$href = $( '<a href="#" target="_blank">Fallstudie lesen</a>' );
 						this.$details = $( '<div class="og-details"></div>' ).append( this.$title, this.$description, this.$href );
 						this.$loading = $( '<div class="og-loading"></div>' );
 						this.$fullimage = $( '<div class="og-fullimg"></div>' ).append( this.$loading );
@@ -390,7 +384,7 @@ if (!doNotTrack) {
 						this.$title.html( eldata.title );
 						this.$description.html( eldata.description );
 						if(eldata.buttontext) this.$href.text(eldata.buttontext);
-						else this.$href.text("Get the theme")
+						else this.$href.text("Fallstudie lesen")
 
 						if (eldata.href) {
 							this.$href.attr( 'href', eldata.href );
