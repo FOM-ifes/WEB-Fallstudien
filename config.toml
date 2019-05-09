@@ -1,6 +1,6 @@
 # Site settings
 baseurl = "/"
-languageCode = "en-us"
+languageCode = "de-de"
 title = "Fallstudien zur Datenanalyse - ifes@FOM"
 theme = "hugrid-master"
 # Enter your tracking code to enable Google Analytics
@@ -19,7 +19,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     subtitle = "Es könnten 42 sein."
     author = "ifes"
     description = "Hier steht eine Beschreibung"
-    keywords = "Hugo, Hugo theme, grid theme, portfolio, bookmarks, collection, contacts"
+    keywords = "FOM ifes Fallstudien Data-Literacy Statistik Statistics Data-Science"
 
     # Body background color
     bodybgcolor = "#f9f9f9"
@@ -28,7 +28,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     buttontext = "Fallstudie lesen"
 
     # Footer text
-    footertext = "Made by [ifes@FOM](https://www.fom.de/forschung/institute/ifes.html), [Hugo](http://gohugo.io) and [me](https://github.com/aerohub)"
+    footertext = "Made by [ifes@FOM](https://www.fom.de/forschung/institute/ifes.html), [Hugo](http://gohugo.io) and [hugrid](https://github.com/aerohub/hugrid)"
 
     # add extra-css
     # custom_css = ['css/extra1.css', 'css/extra2.css']
