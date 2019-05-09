@@ -23,7 +23,7 @@ image = "images/test3.png"
 thumb = "images/thumbs/test3-thumb.png"
 alt = "Fallstudie '3'"
 description = "A simple grid theme for Hugo. A kind of boilerplate to perform anyone or anything quickly. Portfolio, collection, bookmarks, contacts and so on."
-url = "https://github.com/aerohub/hugrid"
+url = "https://raw.github.com/NMarkgraf/FallstudienWebseite/master/public/casestudies/Fallstudie_UWaesche/Unterwaesche.html"
 
 
 [[items]]
