@@ -1,0 +1,249 @@
+---
+title: "Kaufen Frauen öfter Unterwäsche?"
+author: "Karsten Lübke"
+date: "10.04.2019"
+
+output: 
+  pdf_document:
+    fig_height: 3
+    fig_width: 5
+  documentclass: article
+  classoption: a4paper
+editor_options: 
+  chunk_output_type: console
+  
+bibliography: fallstudien.bib
+biblio-style: apa
+
+keywords: Inferenz numerischer Daten, Zwei-Gruppen Vergleich, Geschlechtsunterschiede, Einkaufsverhalten
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# 1. Forschungsfrage
+
+
+Kaufen Frauen wirklich häufiger Unterwäsche als Männer? 
+
+Es scheint Unterscheide im Konsumverhalten der Geschlechter zu geben, siehe z. B. [@pentecost2010].
+
+Aber gilt dies auch für junge Dortmunder\*innen, die neben dem Beruf studieren? Insbesondere: gilt dies auch für Unterwäsche?
+
+
+# 2. Studiendesign
+
+Das Geschlecht kann recht einfach erfragt werden, aber die Ermittlung der Kauffrequenz ist schon schwieriger. Man könnte fragen: "Wie oft haben Sie in den letzten 24 Monaten Unterwäsche gekauft?" Diese Fragen können viele nicht wirklich gut beantworten. Eine Alternative ist zu fragen, wie lange der letzte Kauf her ist. Die Erhebung der Kauffrequenz erfolgte hier daher über diese Frage:
+
+"Vor wie vielen Tagen haben Sie zuletzt Unterwäsche gekauft?"
+
+Als Stichprobenverfahren wurde hier eine Gelegenheitsstichprobe verwendet: eine anonyme, freiwillige Papier+Bleistift Umfrage in der Vorlesung.
+
+
+# 3. Datenerhebung
+
+Die Datenerhebung erfolgte in drei Statistik Vorlesungen an der FOM Dortmund im Studiengang BBA/BAIM/BST. Die Rohdaten liegen als `xlsx` Datei vor.
+
+```{r}
+# Ggfs. Paket readxl installieren
+# install.packages("readxl")
+
+# Paket laden
+library(readxl)
+
+# Daten einlesen
+uwaesche <- read_excel("Uwaesche.xlsx")
+```
+
+\newpage
+
+# 4. Datenanalyse
+
+Vorbereitung:
+
+```{r, message=FALSE}
+# Ggfs. Paket mosaic installieren
+# install.packages("mosaic")
+
+# Paket laden
+library(mosaic)
+
+# Erste Datenübersicht
+inspect(uwaesche)
+```
+
+Es liegen $n=`r nrow(uwaesche)`$ Beobachtungen von `r ncol(uwaesche)` Variablen vor. Als kategoriale Variable "`r inspect(uwaesche)$categorical$name`" und als numerische "`r inspect(uwaesche)$quantitative$name`", d. h. die Anzahl Tage seit letztem Unterwäschekauf.
+
+
+## Grafische Analyse
+
+Das Histogramm der Verteilung zeigt eine deutlich rechtsschiefe Verteilung:
+
+```{r}
+gf_histogram(~ Tage, data = uwaesche)
+```
+
+Ein Dichteplot legt zudem nahe, dass sich die Verteilungen zwischen Männern und Frauen unterscheiden:
+
+```{r}
+gf_density(~ Tage, fill = ~ Geschlecht,  alpha = 0.5, data = uwaesche)
+```
+
+Es scheint so zu sein, dass das weibliche Geschlecht einen höheren Anteil an Personen hat, die vor kürzerer Zeit Unterwäsche gekauft haben. 
+Dies wird auch durch einen Boxplot bestätigt:
+
+```{r}
+gf_boxplot(Tage ~ Geschlecht, data = uwaesche)
+```
+
+Unteres Quartil, obereres Quartil und Median sind bei den Frauen geringer. Der Interquartilsabstand bei den Männern größer. Bei beiden Geschlechtern gibt es Ausreißer nach oben.^[Hoffentlich wird die Unterwäsche wenigstens öfter gewechselt...]
+
+## Kennzahlen
+
+Das, was die Abbildungen zeigen, zeigt sich auch in den Kennzahlen:
+```{r}
+favstats(Tage ~ Geschlecht, data = uwaesche)
+```
+
+Sowohl im Median als auch im arithmetischen Mittelwert liegen die Geschlechter über einen Monat in der Zeit seit dem letzten Unterwäschekauf auseinander.
+
+
+# 5. Inferenz
+
+Für die Stichprobe stimmt also die Forschungsthese, dass berufstätig in Dortmund studierende Frauen häufiger Unterwäsche kaufen als Männer, da der letzte Einkauf kürzer zurückliegt.^[Bei mehr oder weniger gleichmäßigen Kaufintervallen kann von der Dauer seit dem letzten Kauf auf die Anzahl Anzahl der Käufe in einem Zeitraum geschlossen werden.]
+
+
+Aufgrund der Schiefe kann nicht von einer Normalverteilung ausgegangen werden, ein Permutationstest ist aber möglich, wenn die Verteilung unter $H_0$ gleich ist: $F_w=F_m$. Dann kann $m$ und $w$ permutiert werden. 
+
+Liefern die Daten Belege für die Forschungsthese in der Population? Da aus der Literatur eine Richtung vermutet werden kann, wird hier gerichtet getestet.^[Standardfall: ungerichtet!]. Eine Analyse ist z. B. über den arithmetischen Mittelwert möglich:
+
+$$H_0: \mu_w \geq \mu_m \quad vs. \quad H_A: \mu_w < \mu_m$$
+
+
+```{r}
+# Beobachtete Differenz
+diff.stipro <- diffmean(Tage ~ Geschlecht, data = uwaesche)
+diff.stipro
+```
+
+
+```{r}
+# Reproduzierbarkeit
+set.seed(1896)
+# Permutation
+Nullvtlg <- do(10000) * diffmean(Tage ~ shuffle(Geschlecht), data = uwaesche)
+```
+
+Verteilung der Teststatistik, wenn die Nullhypothese der Gleichheit der Verteilungen gilt:
+
+```{r}
+gf_histogram( ~ diffmean, data = Nullvtlg) %>%
+  gf_vline(xintercept = ~ diffmean(Tage ~ Geschlecht, data = uwaesche))
+```
+
+Der beobachtete Unterschied von $\bar{x}_w-\bar{x}_m=`r round(diffmean(Tage ~ Geschlecht, data = uwaesche))`$ ist unwahrscheinlich, wenn Gleicheit der Verteilungen gilt:
+
+```{r}
+# P-Wert
+p.value <- prop(~ (diffmean <= diff.stipro), data = Nullvtlg)
+p.value
+```
+
+Der Anteil der $10000$ Simulationen mit mindestens so großen Abweichungen wie in der Stichprobe, wenn die Nullhypothese in der Population stimmt, liegt bei `r p.value`, d.h. der p-Wert ist kleiner als $1/10000$. 
+
+Der Unterschied ist damit *signifikant*. Ist er auch relevant? Betrachten wir dazu die Effektgröße Cohens d:
+
+```{r}
+# Ggfs. Paket lsr installieren
+# install.packages("lsr")
+
+# Paket laden
+library(lsr)
+# Cohens d
+d.stipro <- cohensD(Tage ~ Geschlecht, data = uwaesche)
+d.stipro
+```
+
+Es liegt ein mittlerer Effekt des Geschlechts auf die Anzahl Tage seit letztem Unterwäschekauf vor.
+
+Der Punktschätzer für die Differenz liegt bei $\hat{\mu}_w - \hat{\mu}_m = \bar{x}_w-\bar{x}_m=`r round(diffmean(Tage ~ Geschlecht, data = uwaesche))`$. 
+
+```{r}
+# Reproduzierbarkeit
+set.seed(1896)
+# Bootstrap
+Bootvtlg <- do(10000) * diffmean(Tage ~ Geschlecht, data = resample(uwaesche))
+```
+
+Der Standardfehler $se$ für die Differenz der Mittelwerte kann anhand der Bootstrap Verteilung geschätzt werden:
+
+```{r}
+# Standardfehler se
+se.boot <- sd( ~ diffmean, data = Bootvtlg)
+se.boot
+```
+
+
+
+Die Bootstrap Verteilung für die Differenz sieht wie folgt aus:
+
+```{r}
+gf_histogram( ~ diffmean, data = Bootvtlg)
+quantile( ~ diffmean, probs = c(0.025, 0.975), data = Bootvtlg)
+```
+
+Das $95\%$-Resampling-Konfidenzintervall für die Differenz der Mittelwerte geht von `r floor(quantile( ~ diffmean, probs = c(0.025, 0.975), data = Bootvtlg)[1])` bis `r ceiling(quantile( ~ diffmean, probs = c(0.025, 0.975), data = Bootvtlg)[2])`^[Die mittlere Differenz von $0$ Tagen (kein Unterschied) ist nicht im Konfidenzintervall enthalten.] ($\bar{x}_w-\bar{x}_m=`r round(diffmean(Tage ~ Geschlecht, data = uwaesche))`; \quad se=`r round(se.boot, 2)`$). 
+
+Aufgrund der Größe des Stichprobe^[Zentraler Grenzwertsatz] kann auch ein parametrischer t-Test (gerichtet) durchgeführt werden, der zum selben Ergebnis kommt.^[Beachte, dass statt $\mu_w-\mu_m$ (Permutation, `diffmean()`) im t-Test $\mu_m-\mu_w$ analysiert wird.]
+
+```{r}
+t.test(Tage ~ Geschlecht, data = uwaesche, alternative = "greater")
+```
+
+
+<!-- Bei schiefen Verteilungen beschreibt häufig der Median das Zentrum der Verteilung besser. Aber auch wenn dieser getestet wird, wird die Nullhypothese "kein Lageunterschied" verworfen:  -->
+
+<!-- ```{r} -->
+<!-- # Mediane -->
+<!-- median(Tage ~ Geschlecht, data = uwaesche) -->
+<!-- # Differenz -->
+<!-- diffmedian.stipro <- diff(median(Tage ~ Geschlecht, data = uwaesche)) -->
+<!-- diffmedian.stipro  -->
+<!-- # Simulation H_0 -->
+<!-- Nullvtlg.median <- do(10000) * diff(median(Tage ~ shuffle(Geschlecht), data = uwaesche)) -->
+<!-- # p-Wert -->
+<!-- pvalue.median <- prop( ~ (abs(w) >= abs(diffmedian.stipro)), data = Nullvtlg.median) -->
+<!-- pvalue.median -->
+<!-- ``` -->
+
+
+<!-- Die beobachtete Differenz der Mediane der Stichprobe tritt im Permutationstest sehr selten auf (p-Wert=$`r #pvalue.median`$). -->
+
+# 6. Schlussfolgerungen
+
+Kaufen Frauen (wirklich) häufiger Unterwäsche als Männer? 
+
+Anhand der vorliegenden Daten, bezogen auf den arithmetischen Mittelwert lautet die Antwort: Ja. Im Mittelwert haben Frauen das letzte Mal vor `r round(mean(Tage ~ Geschlecht, data = uwaesche))[2]` ($sd=`r round(sd(Tage ~ Geschlecht, data = uwaesche))[2]`$) Tagen Unterwäsche gekauft, Männer vor `r round(mean(Tage ~ Geschlecht, data = uwaesche))[1]` ($sd=`r round(sd(Tage ~ Geschlecht, data = uwaesche))[1]`$). Dies ist mittlerem Effekt ($d=`r round(d.stipro, 2)`$). Die Nullhypothese der Gleichheit wird mit einem p-Wert $<0.001$ verworfen.
+
+Da es sich um eine Beobachtungsstudie handelt sind keine Kausalaussagen möglich. Auch wurden außer dem Geschlecht 
+keine weiteren Variablen wie z. B. Einkommen oder Modebewußtsein erhoben, die auch einen Einfluss auf die Kauffrequenz haben können. Aufgrund der Gelegenheitsstichprobe kann maximal auf an der FOM BBA/BAIM/BST Studierende geschlossen werden, sofern davon ausgegangen wird, dass der Standort Dortmund repräsentativ ist. Z. B. könnten ältere Menschen ein anderes Einkaufsverhalten haben. Auch ist die Validität der Messung ggf. eingeschränkt, da nicht die tatsächliche Kauffrequenz, sondern nur die Erinnerung erhoben wurde.
+
+
+***
+
+# Anhang: Versionshinweise
+
+- Datum erstellt: `r Sys.Date()`
+- R Version: `r getRversion()`
+
+Verwendete Pakte:
+
+- `mosaic` Version: `r packageVersion("mosaic")`
+- `ggformula` Version: `r packageVersion("ggformula")`
+- `lsr` Version: `r packageVersion("lsr")`
+- `readxl` Version: `r packageVersion("readxl")`
+
+# Literatur
+

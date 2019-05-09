@@ -1,0 +1,45 @@
+[[items]]
+title = "Fallstudie 'Unterwäsche'"
+image = "images/test1.png"
+thumb = "images/thumbs/test1-thumb.png"
+alt = "Fallstudie 'Unterwäsche'"
+description = "Lorem Ipusm skjldfj jskldfj jskldfsadkjlf sjkalfdjklf dsfjdkslfj  "
+url = "https://github.com/aerohub/hugrid"
+
+
+
+[[items]]
+title = "Fallstudie 2"
+image = "images/test2.png"
+thumb = "images/thumbs/test2-thumb.png"
+alt = "Fallstudie '2'"
+description = "A simple grid theme for Hugo. A kind of boilerplate to perform anyone or anything quickly. Portfolio, collection, bookmarks, contacts and so on."
+url = "https://github.com/aerohub/hugrid"
+
+
+[[items]]
+title = "Hugrid Theme"
+image = "images/test3.png"
+thumb = "images/thumbs/test3-thumb.png"
+alt = "Fallstudie '3'"
+description = "A simple grid theme for Hugo. A kind of boilerplate to perform anyone or anything quickly. Portfolio, collection, bookmarks, contacts and so on."
+url = "https://github.com/aerohub/hugrid"
+
+
+[[items]]
+title = "Fallstudie 3"
+image = "images/test4.png"
+thumb = "images/thumbs/test4-thumb.png"
+alt = "Fallstudie '4'"
+description = "A simple grid theme for Hugo. A kind of boilerplate to perform anyone or anything quickly. Portfolio, collection, bookmarks, contacts and so on."
+url = "https://github.com/aerohub/hugrid"
+
+
+[[items]]
+title = "Hugrid Theme"
+image = "images/full/5.png"
+thumb = "images/thumbs/5.png"
+alt = "Hugrid Theme"
+description = "A simple grid theme for Hugo. A kind of boilerplate to perform anyone or anything quickly. Portfolio, collection, bookmarks, contacts and so on."
+url = "https://github.com/aerohub/hugrid"
+
