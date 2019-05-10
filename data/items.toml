@@ -1,6 +1,6 @@
 [[items]]
 title = "Fallstudie 'Unterwäsche'"
-image = "images/1.png"
+image = "images/full/1.png"
 thumb = "images/thumbs/1.png"
 alt = "Fallstudie 'Unterwäsche'"
 description = "Lorem Ipusm skjldfj jskldfj jskldfsadkjlf sjkalfdjklf dsfjdkslfj  "
@@ -10,7 +10,7 @@ url = "https://data-se.netlify.com/2019/03/26/reducing-residual-variance-in-mode
 
 [[items]]
 title = "Fallstudie 2"
-image = "images/2.png"
+image = "images/full/2.png"
 thumb = "images/thumbs/2.png"
 alt = "Fallstudie '2'"
 description = "A simple grid theme for Hugo. A kind of boilerplate to perform anyone or anything quickly. Portfolio, collection, bookmarks, contacts and so on."
@@ -19,7 +19,7 @@ url = "https://xkcd.com/927/"
 
 [[items]]
 title = "Fallstudie 3 - Unterwäsche"
-image = "images/3.png"
+image = "images/full/3.png"
 thumb = "images/thumbs/3.png"
 alt = "Fallstudie '3' - 'Unterwäsche'"
 description = "Irgendeine coole Fallstudie mit Unterwäsche"
@@ -28,7 +28,7 @@ url = "Fallstudie_UWaesche/Unterwaeche.pdf"
 
 [[items]]
 title = "Fallstudie 4"
-image = "images/4.png"
+image = "images/full/4.png"
 thumb = "images/thumbs/4.png"
 alt = "Fallstudie '4'"
 description = "A simple grid theme for Hugo. A kind of boilerplate to perform anyone or anything quickly. Portfolio, collection, bookmarks, contacts and so on."
