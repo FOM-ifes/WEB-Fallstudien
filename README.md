@@ -36,15 +36,17 @@ Also Beispiel hier der Weg zur **Fallstudie_UWaesche**:
            |                      
            + ...
 ```    
+
+
 3. Anlegen eines Eintrages in **items.toml** im Verzeichnis **data/**:
 ```
 [[items]]
 title = "Fallstudie 3 - Unterwäsche"
-image = "images/3.png"
+image = "images/full/3.png"
 thumb = "images/thumbs/3.png"
 alt = "Fallstudie '3' - 'Unterwäsche'"
 description = "Irgendeine coole Fallstudie mit Unterwäsche"
-url = "Fallstudie_UWaesche/Unterwaeche.pdf"
+url = "Fallstudie_UWaesche/Unterwaesche.pdf"
 
 ```
 
