@@ -4,12 +4,14 @@
 
 In diesem Mini-Projekt wird eine kleine "Kachel-Webseite"" erstellt werden, auf der Fallstudien gesammelt werden können.
 
+
 ## Was nicht ins Repository gehört!
 
 Das Verzeichnis *public/* wird u.U. zwar lokal erstellt. Zum Beispiel bei RStudio und blogdown, wenn man sich das Ergebnis von Änderungen lokal ansehen möchte. -- Aber es gehört ***nicht*** ins Repository, da es vom automatisiereten Erstellungsdienst von netlify.com beim Neuerstellen (deploying) 
 der Seite selbsttätig generiert wird!
 
 Darum dürfen dort auch keine Änderungen oder statische Inhalte hinterlegt werden.
+
 
 ## Wo sollen die Fallstudien dann hin?
 
@@ -51,3 +53,8 @@ url = "Fallstudie_UWaesche/Unterwaeche.pdf"
     
 
     
+## Wo findet man die Seite?
+
+Test-Seite unter: https://fallstudien.netlify.com
+
+
