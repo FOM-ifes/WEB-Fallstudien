@@ -2,20 +2,20 @@
 title: "Kaufen Frauen öfter Unterwäsche?"
 author: "Karsten Lübke"
 date: "10.04.2019"
-output:
-  html_document:
-    df_print: paged
-  documentclass: article
-  classoption: a4paper
+
+output: 
   pdf_document:
     fig_height: 3
     fig_width: 5
-editor_options:
+  documentclass: article
+  classoption: a4paper
+editor_options: 
   chunk_output_type: console
-keywords: Inferenz numerischer Daten, Zwei-Gruppen Vergleich, Geschlechtsunterschiede,
-  Einkaufsverhalten
+  
 bibliography: fallstudien.bib
 biblio-style: apa
+
+keywords: Inferenz numerischer Daten, Zwei-Gruppen Vergleich, Geschlechtsunterschiede, Einkaufsverhalten
 ---
 
 ```{r setup, include=FALSE}
