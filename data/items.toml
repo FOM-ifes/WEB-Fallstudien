@@ -34,5 +34,12 @@ alt = "Fallstudie '4'"
 description = "A simple grid theme for Hugo. A kind of boilerplate to perform anyone or anything quickly. Portfolio, collection, bookmarks, contacts and so on."
 url = "https://github.com/aerohub/hugrid"
 
+[[items]]
+title = "Fallstudie 5"
+image = "images/full/5.png"
+thumb = "images/thumbs/5.png"
+alt = "Fallstudie '5' - Modellierung Preis-Absatz Funktion"
+description = "Lineare und linearisierte Regression zur Schätzung der Preis-Absatz Funktion."
+url = "Fallstudie_PreisAbsatz/PreisAbsatz.html"
 
 
