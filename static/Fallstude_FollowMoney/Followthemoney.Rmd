@@ -1,0 +1,229 @@
+---
+title: "Garagenflohmarkt und Ungleichheit"
+author: "Karsten Lübke"
+date: "30.08.2018"
+output:
+  html_document:
+    df_print: paged
+  documentclass: article
+  classoption: a4paper
+  pdf_document:
+    fig_height: 3
+    fig_width: 5
+editor_options:
+  chunk_output_type: console
+keywords: Simulation, Ungleichheit, Steuern, Marktmodell
+bibliography: fallstudien.bib
+biblio-style: apa
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 1. Forschungsfrage
+
+Ungleichheit ist u.a. in Wissenschaft und Politik ein aktuell viel diskutiertes Thema. Aber wie entsteht sie? Ein einfaches Modell, das sogenannte *Garagenflohmarktmodell* ("Yard Sale Model", [@hayes2002]) kann dazu dienen ungleiche Vermögensverteilung zu erklären.
+
+Durch einfache Simulationen soll untersucht werden, wie sich z. B. Steuern auf die Entwicklung der Ungleichheit innerhalb des Modells auswirken.^[Für realistischere Ansätze siehe z. B. [@bertotti2018]]
+
+
+
+# 2. Garagenflohmarktmodell und Steuern
+
+## Garagenflohmarktmodell
+Innerhalb einer endlichen, konstanten Population von $n$ Agenten werden nacheinander $t$ Transaktionen zwischen zwei zufällig ausgewählten Händlern ausgeführt. Dabei wird ein Anteil $a$ des Vermögens des ärmeren der beiden Händler ausgetauscht. Beide Händler haben die gleiche Gewinnwahrscheinlichkeit (Nullsummenspiel).
+
+Beispiel:
+
+Es werden zum Zeitpunkt $t$ zufällig Händler A und Händler B ausgewählt. Das Vermögen von Händler A beträgt $x^A_t=10$ und das von B sei $x^B_t=50$. Der Anteil des Handelsvolumens  sei $a=10\%$, also $v_t=a \cdot min(x^A_t,x^B_t)=0.1\cdot 10 =1$. Zufällig gewinnt B, so dass $x^A_{t+1}=10-1=9$ und $x^B_{t+1}=50+1=51$ beträgt.
+
+
+## Steuern
+
+Steuern können z. B. simuliert werden, so das alle $t_{tax}$ Transaktionen ein zum Vermögen $x_{t_{tax}}$ proportionaler Steuersatz $i$ erhoben wird und die Summe gleichmäßig auf alle verteilt wird:
+\[
+x^j_{t_{tax}+1}=(1-i)\cdot x^j_{t_{tax}} + \frac{\sum_{j=1}^n i \cdot x^j_{t_{tax}}}{n}
+\]
+
+\newpage
+
+# 3. Simulation
+
+## Vorbereitungen
+
+Pakete laden:
+```{r, message=FALSE}
+# Ggfs. Paket dplyr installieren
+# install.packages("dplyr")
+library(dplyr)
+# Ggfs. Paket tidyr installieren
+# install.packages("tidyr")
+library(tidyr)
+# Ggfs. Paket ggformula installieren
+# install.packages("ggformula")
+library(ggformula)
+# Ggfs. Paket ineq installieren
+# install.packages("ineq")
+library(ineq)
+```
+
+## Modellparameter festlegen
+
+Die konkrete Entwicklung der Vermögensverteilung hängt von vielen Parametern ab. Diese werden hier festgelegt.
+
+```{r}
+# Anzahl Agenten:
+n <- 1000
+# Anzahl Transaktionen
+trades <- 100000
+# Anteil Handelsvolumen
+a <- 0.1
+# Steuersatz
+i <- 0.1
+# Fällig nach t_tax Transaktionen
+ttax <- 1000
+```
+
+
+
+## Simulation ohne Steuern
+
+Zum Start der Simulation haben alle das gleiche Vermögen, z. B. $100$:
+```{r}
+wealth_oS <- rep(100, n)
+```
+
+Vektor, der die Ungleichheit des Vermögens mit Hilfe des Gini-Koeffizienten misst bereitstellen:
+```{r}
+gini_oS <- numeric(trades)
+```
+
+Schleife über die Transaktionen:
+```{r}
+# Zufallszahlengenerator setzen:
+set.seed(1896)
+
+for (j in 1:trades)
+{
+  # Zufallsauswahl zweier Händler:
+  trader <- sample(1:n, 2)
+  # Bestimmung Handelsvolumen:
+  v <- a*min(wealth_oS[trader])
+  
+  # Der erste Handelpartner gewinnt, der zweite verliert:
+  wealth_oS[trader[1]] <- wealth_oS[trader[1]] + v
+  wealth_oS[trader[2]] <- wealth_oS[trader[2]] - v
+  
+  # Berechnung Gini Koeffizient:
+  gini_oS[j] <- Gini(wealth_oS)
+  }
+```
+
+
+## Simulation mit Steuern
+
+Zum Start der Simulation haben alle das gleiche Vermögen, z. B. $100$:
+```{r}
+wealth_mS <- rep(100, n)
+```
+
+Vektor, der die Ungleichheit des Vermögens mit Hilfe des Gini-Koeffizienten misst bereitstellen:
+```{r}
+gini_mS <- numeric(trades)
+```
+
+Schleife über die Transaktionen:
+```{r}
+# Zufallszahlengenerator setzen:
+set.seed(1896)
+
+for (j in 1:trades)
+{
+  # Zufallsauswahl zweier Händler:
+  trader <- sample(1:n, 2)
+  # Bestimmung Handelsvolumen:
+  v <- a*min(wealth_mS[trader])
+
+  # Der erste Handelpartner gewinnt, der zweite verliert:
+  wealth_mS[trader[1]] <- wealth_mS[trader[1]] + v
+  wealth_mS[trader[2]] <- wealth_mS[trader[2]] - v
+  
+  # Alle ttax Transaktionen: Steuern fällig.
+  # In dem Fall Division Anzahl Iterationen duch durch ttax ergibt Rest 0.
+  if (j%%ttax==0)
+  {
+    # Vermögenssteuer:
+    tax <- i*wealth_mS
+    # Steuerabzug:
+    wealth_mS <- wealth_mS - tax
+    # Steuerausschüttung:
+    wealth_mS <- wealth_mS + sum(tax)/n
+  }
+
+  
+  # Berechnung Gini Koeffizient:
+  gini_mS[j] <- Gini(wealth_mS)
+  }
+```
+
+# 4. Ergebnisse
+
+## Vermögensverteilung 
+
+Die Vermögensverteilung am Ende sieht für die Simulation ohne Steuern wie folgt aus:
+```{r}
+gf_density(~wealth_oS)
+```
+
+Während Sie mit Steuern so aussieht:
+```{r}
+gf_density(~wealth_mS)
+```
+
+Während ohne Steuern die Meisten nur noch ein sehr geringes Vermögen haben - nur einige wenige besitzen viel bis sehr viel, ist beim Modell mit Steuern die Verteilung zwar auch rechtsschief, aber nicht so extrem.
+
+\newpage
+
+## Entwicklung Gini Koeffizient
+
+Datensatz bereitstellen:
+```{r}
+gini <- data.frame(trades=1:trades, Gini_oS=gini_oS, Gini_mS=gini_mS)
+gini <- gini %>%
+  gather(tax, gini, -trades)
+```
+
+Liniendiagramm:
+```{r}
+gf_line(gini ~ trades, col=~tax, data = gini)
+```
+
+Während der Gini Koeffizient im Fall ohne Steuern immer steigt scheint er in der vorliegenden Simulation mit Steuern nach ca. 15000 Transaktionen eine obere Schranke zu erreichen. Wo diese liegt hängt aber von den gewählten Parametern ab (vgl. [@chorro2016]).
+
+# 5. Schlussfolgerungen und Ausblick
+
+Ein stark vereinfachtes Modell ("Garagenflohmarkt") kann die Entstehung von Ungleichheit auch bei Nullsummenspielen in abgeschlossenen Systemen erklären. Steuern können ein Instrument sein diese abzumildern.
+
+Für mögliche Erweiterungen des Basismodells siehe z. B. [@boghosian2014].
+
+Interessant ist auch ein Vergleich der theoretischen Modelle mit empirischen Beobachtungen, vgl. z. B. [@brzezinski2014].
+
+***
+
+# Anhang: Versionshinweise
+
+- Datum erstellt: `r Sys.Date()`
+- R Version: `r getRversion()`
+
+Verwendete Pakte:
+
+- `dplyr` Version: `r packageVersion("dplyr")`
+- `ggformula` Version: `r packageVersion("ggformula")`
+- `ineq` Version: `r packageVersion("ineq")`
+- `tidyr` Version: `r packageVersion("tidyr")`
+
+# Literatur
+
+
+

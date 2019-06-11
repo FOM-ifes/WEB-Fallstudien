@@ -42,4 +42,11 @@ alt = "Fallstudie '5' - Modellierung Preis-Absatz Funktion"
 description = "Lineare und linearisierte Regression zur Schätzung der Preis-Absatz Funktion."
 url = "Fallstudie_PreisAbsatz/PreisAbsatz.html"
 
+[[items]]
+title = "Fallstudie 6"
+image = "images/full/6.png"
+thumb = "images/thumbs/6.png"
+alt = "Fallstudie '6' - Garagenflohmarkt und Ungleichheit"
+description = "(Einfache) Marktsimulation zur Entstehung von Ungleichheit."
+url = "Fallstudie_FollowMoney/Followthemoney.html"
 
