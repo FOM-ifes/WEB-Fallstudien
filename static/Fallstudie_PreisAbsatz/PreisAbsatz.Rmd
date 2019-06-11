@@ -1,0 +1,202 @@
+---
+title: "Modellierung der Preis-Absatz Funktion"
+author: "Karsten Lübke"
+date: "17.04.2018"
+output:
+  html_document:
+    df_print: paged
+  documentclass: article
+  classoption: a4paper
+  pdf_document:
+    fig_height: 3
+    fig_width: 5
+editor_options:
+  chunk_output_type: console
+keywords: Lineare Regression, Preis-Absatz Funktion
+bibliography: fallstudien.bib
+biblio-style: apa
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# 1. Forschungsfrage
+
+Das Preismanagement ist eine zentrale Frage für Unternehmen, aber die Abschätzung der Zusammenhänge ist nicht einfach, siehe z. B. [@steiner2010].
+
+Es existieren verschiedene Modellierungsansätze für Preis-Absatz Funktionen. Hier ist der Preis $p$ die erklärende Variable, die Menge $q$ die erklärte Variable: $q=f(p)$, z. B.:
+
+- Linear: $q=a-b\cdot p$. Vgl. $y=\beta_0 + \beta_1 \cdot x$.
+- Multiplikativ: $q=a \cdot p^{-b}$. Vgl. $y=\beta_0 \cdot x^{\beta_1} \Leftrightarrow ln(y)=ln(\beta_0)+\beta_1 \cdot ln(x)$.
+
+mit unbekannten Koeffizienten $a,b$ (bzw. $\beta_0, \beta_1$), die mit Hilfe von Daten geschätzt werden können.
+
+Welche der Modellierungsansätze kann Preis-Absatz Funktionen besser beschreiben?
+
+
+# 2. Studiendesign
+
+Die Zahlungsbereitschaft wurde erhoben anhand der Frage: "Würden Sie das Produkt zum Preis $P$ kaufen?" vgl. z. B. [@adler2003]. Hier für eine fiktive organische Milch im Preisbereich $p=0.19, 0.29, 0.39, \ldots ,2.99$ (in Euro).
+
+Die Teilnehmer\*innen wurden anhand einer freiwilligen und anonymen Online Umfrage befragt.
+
+
+# 3. Datenerhebung
+
+Die Datenerhebung erfolgte über eine Verteilung des Umfragelinks im Freundes- und Bekanntenkreis. Die aufbereiteten Daten der Online Umfrage liegen als `csv` Datei vor. Es wurde je Preisstufe der Anteil der Personen ($n=104$) berechnet, die das Produkt zum angegebenen Preis kaufen würden.
+
+```{r}
+Milk <- read.csv2("http://www.statistix.org/Data/OrganicMilk.csv")
+```
+
+# 4. Datenanalyse
+
+Datenbeschhreibung:
+
+```{r, message=FALSE}
+# Ggfs. Paket mosaic installieren
+# install.packages(mosaic)
+
+# Paket laden
+library("mosaic")
+
+# Erste Datenübersicht
+inspect(Milk)
+```
+
+- `Price`: Preis der Milch.
+- `Purchase`: Anteil der Personen, die die Milch zu dem Preis kaufen würden.
+
+## Grafische Analyse
+
+```{r}
+gf_point(Purchase ~ Price, data = Milk)
+```
+
+
+Die grafische Analyse über das Streudiagramm zeigt einen fallenden Verlauf (je höher der Preis, desto geringer der Anteil der Leute, die das Produkt kaufen würden) als auch Sprungstellen.
+
+
+
+## Kennzahlen
+
+Die Korrelationskoeffizienten nach Pearson und auch Spearman bestätigen den optischen Eindruck, wobei die Rangkorrelation (Spearman) größer ist:
+
+```{r}
+cor(Purchase ~ Price, data = Milk, method ="pearson")
+cor(Purchase ~ Price, data = Milk, method ="spearman")
+```
+
+
+
+# 5. Modellierung
+
+## Linear
+
+Über den ganzen Wertebereich ist eine lineare Modellierung nicht sinnvoll:
+
+```{r}
+linear1 <- lm(Purchase ~ Price, data = Milk)
+gf_point(Purchase ~ Price, data = Milk) %>%
+  gf_line(fitted(linear1) ~ Milk$Price)
+```
+
+Eine lokale Anpassung für den Bereich von $0.89$ bis $1.59$:
+
+```{r}
+Milk2 <- Milk %>%
+  filter(0.89<=Price & Price<=1.59)
+
+linear2 <- lm(Purchase ~ Price, data = Milk2)
+gf_point(Purchase ~ Price, data = Milk2) %>%
+  gf_line(fitted(linear2) ~ Milk2$Price)
+
+summary(linear2)
+```
+
+```{r, echo=FALSE}
+plp <- summary(linear2)$coefficients[2,4]
+```
+
+
+Innerhalb des Wertebereiches zwischen $0.89$€ und $1.59$€ gilt als Schätzgleichung:
+
+$$\hat{y}=`r round(coef(linear2)[1],2)` - `r abs(round(coef(linear2)[2],2))`\cdot x$$
+
+D. h., pro $0.10$€ wird in diesem Wertebereich ein Rückgang des Mittelwertes der Zahlungsbereitschaft um  `r abs(round(0.1*coef(linear2)[2],2))`$\%$ beobachtet. Eine Extrapolation sollte nicht erfolgen. Allerdings ist in diesem Bereich die Anpassung sehr gut: $R^2=`r round(rsquared(linear2),3)`$.
+
+Die Nullhypothese "Es gibt keinen linearen Zusammenhang zwischen Preis und Absatz", d. h. $H_0: \beta_P=0$ wird mit einem P-Wert von $`r plp`$ verworfen ($\alpha=0.001$).
+
+## Multiplikativ
+
+Über den ganzen Wertebereich ist auch eine multiplikative Modellierung nicht sinnvoll:
+```{r}
+multi1 <- lm(log(Purchase) ~ log(Price), data = Milk)
+gf_point(Purchase ~ Price, data = Milk) %>%
+  gf_line(exp(fitted(multi1)) ~ Milk$Price)
+```
+
+Eine Anpassung im Wertebereich $1.09$ bis $2.99$ sieht wie folgt aus:
+
+```{r}
+Milk2 <- Milk %>%
+  filter(1.09<=Price & Price<=2.99)
+
+multi2 <- lm(log(Purchase) ~ log(Price), data = Milk2)
+gf_point(Purchase ~ Price, data = Milk2) %>%
+  gf_line(exp(fitted(multi2)) ~ Milk2$Price)
+
+summary(multi2)
+```
+
+In diesem Bereich gilt in diesem Modell:
+
+$$\hat{y}=e^{`r round(coef(multi2)[1],2)`}\cdot x^{`r round(coef(multi2)[2],2)`}$$
+D. h., die geschätzte Preiselastizität der Nachfrage liegt hier bei $`r (round(coef(multi2)[2],2))`$. Auch hier ist die Anpassung gut: in diesem Bereich werden auf logarithmischer Skala $R^2=`r round(rsquared(multi2),3)`$ der Variation der Nachfrage modelliert^[$R^2$ von transformierten und untransformierten Variablen $y$ können nicht direkt verglichen werden.] und $H_0: \beta_P=0$ wird verworfen ($\alpha=0.001$).
+
+
+# 6. Schlussfolgerungen
+
+In den vorliegenden Daten können weder das lineare noch das multiplikative Modell die Preis-Absatz Funktion über den ganzen Wertebereich modellieren - es sind nur lokale Anpassungen sinnvoll.
+
+Außerdem wurde nur die fiktive Kaufabsicht einer Gelegenheitsstichprobe erhoben, es wurden keine realen Kaufdaten verwendet.
+
+## Ausblick 
+
+Eine flexible Alternative ist die Spline Regression. Hier wird der Wertebereich von $x$ in Intervalle aufgeteilt und innerhalb dieser Intervalle werden Polynome angepasst, wobei die Übergänge geglättet werden, siehe z. B. [@james2013]. 
+
+```{r}
+# Paket laden
+library(splines)
+
+splines <- lm(Purchase ~ bs(Price, 
+                            knots=quantile(Price, probs=c(0.25, 0.50, 0.75)), 
+                            degree=3), 
+              data=Milk)
+
+gf_point(Purchase ~ Price, data = Milk) %>%
+  gf_line(fitted(splines) ~ Milk$Price)
+```
+
+Die Interpretation der Koeffizienten (vgl. `summary(splines)`) ist schwierig. Aber man kann erkennen, dass die Anpassung über den ganzen Wertebereich gut ist: $R^2=`r round(rsquared(splines),3)`$.
+
+***
+
+# Danksagung
+
+Die Daten wurden innerhalb der Bachelor Thesis zum Thema "Spline Regression as a Method to Estimate Price Response Functions" erhoben.
+
+# Anhang: Versionshinweise
+
+- Datum erstellt: `r Sys.Date()`
+- R Version: `r getRversion()`
+
+Verwendete Pakte:
+
+- `mosaic` Version: `r packageVersion("mosaic")`
+- `ggformula` Version: `r packageVersion("ggformula")`
+- `splines` Version: `r packageVersion("splines")`
+
+# Literatur
