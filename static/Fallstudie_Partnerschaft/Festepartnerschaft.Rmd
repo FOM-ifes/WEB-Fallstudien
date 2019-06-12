@@ -1,0 +1,226 @@
+---
+title: "Zusammenhang zwischen Alter, Geschlecht und Beziehungsstatus"
+author: "Karsten Lübke"
+date: "22.09.2018"
+output:
+  html_document:
+    df_print: paged
+  documentclass: article
+  classoption: a4paper
+  pdf_document:
+    fig_height: 3
+    fig_width: 5
+editor_options:
+  chunk_output_type: console
+keywords: Logistische Regression, Demographischer Vergleich, Lebensphasen
+bibliography: fallstudien.bib
+biblio-style: apa
+---
+
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Forschungsfrage
+
+Der Zeitpunkt des Eintreten in verschiedene Lebensphasen (z. B. Verlassen des Elternhauses) variiert über die Kulturen und Jahre, siehe z. B. [@perelli-harris2015]. Gilt dies auch für FOM Studierende? Gibt es Unterschiede im Beziehungsstatus zwischen Männern und Frauen und variiert dieser mit dem Alter, sind also z. B. ältere Studierende häufiger in einer festen Partnerschaft als jüngere Studierende? 
+
+
+# Studiendesign
+
+Freiwillige Online Umfrage bei FOM Studierenden unter der Leitung von Dipl.-Psych. Eva Wacker. D. h. es handelt sich um eine Gelegenheitsstichprobe.
+
+Die relevanten Variablen sind manifest:
+
+- Alter: numerisch, verhältnisskaliert, diskret erhoben.
+- Geschlecht: kategorial nominal.
+- Beziehungsstatus: kategorial nominal, binär. Antwort auf die Frage: "Sind Sie derzeit in einer festen Partnerschaft?"
+
+
+# Datenerhebung
+
+Umfrage über SoSci Survey, vom 1.3.2018 bis 30.4.2018. Die Verbreitung erfolgte über einem Link im Online-Campus. Die Rohdaten liegen im `xlsx` (Excel) Format vor.
+
+```{r, message=FALSE}
+# Ggf. Paket readxl vorab installieren
+# install.packages("readxl")
+
+# Paket laden
+library(readxl)
+
+# Daten einlesen
+Umfrage <- read_excel("Daten_SoSe2018_FOM_Wacker.xlsx")
+```
+
+# Datenanalyse
+
+## Datenvorverarbeitung
+
+Relevante Variablen auswählen:
+
+```{r, message=FALSE}
+# Ggfs. Paket mosaic installieren
+# install.packages("mosaic")
+
+# Paket laden
+library(mosaic)
+
+Umfrage <- Umfrage %>%
+  select(Partnerschaft, Alter, Geschlecht)
+```
+
+In den Rohdaten liegen die Werte codiert vor, d. h. z. B. Die Antwort *Ja* auf die Frage "Sind Sie derzeit in einer festen Partnerschaft?" liegt als eine *1* vor. Dies wird zunächst umcodiert. Darüberhinaus werden die kategorialen Variablen als Faktoren in R definiert und evtl. fehlende Werte gelöscht. 
+
+```{r}
+Umfrage <- Umfrage %>%
+  mutate(Partnerschaft = case_when(Partnerschaft == 1 ~ "Ja",
+                                 Partnerschaft == 2 ~ "Nein")) %>%
+  mutate(Geschlecht = case_when(Geschlecht == 1 ~ "weiblich",
+                                Geschlecht == 2 ~ "männlich")) %>%
+  mutate(Partnerschaft = factor(Partnerschaft, levels = c("Nein", "Ja"))) %>%
+  mutate(Geschlecht = factor(Geschlecht)) %>%
+  na.omit()
+```
+
+Erste Übersicht und Kontrolle der Daten:
+
+```{r}
+inspect(Umfrage)
+```
+
+Es liegen $n=425$ Beobachtungen der drei Variablen vor.
+
+## Grafiken
+
+Beziehungsstatus:
+
+```{r}
+gf_bar( ~ Geschlecht, fill=~Partnerschaft, data = Umfrage)
+```
+
+In der Stichprobe sind mehr Personen in einer Partnerschaft als nicht in einer Partnerschaft und insgesamt mehr Frauen als Männer. Frauen sind häufiger in einer festen Partnerschaft als Männer.
+
+Alter:
+
+```{r}
+gf_bar( ~ Alter, data = Umfrage)
+```
+
+Das Alter ist insgesamt rechtsschief verteilt. Die jüngsten sind 18 Jahre, die ältesten knapp unter 40.
+
+
+
+Alter je Beziehungsstatus und Geschlecht:
+
+```{r}
+gf_boxplot(Alter ~ Partnerschaft | Geschlecht, data = Umfrage)
+```
+
+Untere- und Obere Quartil des Alters sind bei Personen die nicht in einer Partnerschaft leben bei den Männern leicht geringer, bei den Frauen ist kein Unterschied zu erkennen. Es gibt Ausreißer im Alter nach oben.
+
+## Kennzahlen
+
+Die deskriptiven Kennzahlen bestätigen die visuellen Eindrücke:
+
+Partnerschaft:
+
+```{r}
+tally(Partnerschaft ~ Geschlecht, data = Umfrage, format = "proportion")
+```
+
+Während $66\%$ der Frauen in einer festen Partnerschaft sind, sind es $58\%$ der Männer.
+
+Alter:
+
+```{r}
+favstats(Alter ~ Partnerschaft, data = Umfrage)
+favstats(Alter ~ Geschlecht, data = Umfrage)
+favstats(Alter ~ Geschlecht + Partnerschaft, data = Umfrage)
+```
+
+Im Mittelwert sind diejenigen, die in einer festen Partnerschaft leben ein Jahr älter, als diejenigen, die nicht in einer festen Partnerschaft leben ($25.4$ Jahre statt $24.4$ Jahre). Auch sind die männlichen Studierenden im Mittelwert leicht älter als die weiblichen ($25.2$ zu $24.9$).
+
+# Modellierung/ Inferenz
+
+Zur Modellierung der Wahrscheinlichkeit in einer festen Partnerschaft zu leben wird ein logistisches Modell inkl. Wechselwirkung verwendet:
+
+\[
+P(\text{Partnerschaft=Ja})=\frac{e^{\beta_0+\beta_{Alter} \cdot Alter + \beta_{Geschlecht} \cdot {Geschlecht}+\beta_{Alter : Geschlecht} \cdot (Alter : Geschlecht)}}{1+e^{\beta_0+\beta_{Alter} \cdot Alter + \beta_{Geschlecht} \cdot {Geschlecht}+\beta_{Alter : Geschlecht} \cdot (Alter : Geschlecht)}}
+\]
+
+Wobei hier gilt:^[siehe `levels(Umfrage$Geschlecht)`]
+\[
+Geschlecht=\begin{cases}1, \,\text{weiblich} \\ 0, \,\text{nicht weiblich}\end{cases}
+\]
+
+
+```{r}
+ergglm <- glm(Partnerschaft ~ Alter*Geschlecht, data = Umfrage, family = "binomial")
+plotModel(ergglm)
+summary(ergglm)
+```
+
+Da $\hat{\beta}_{Alter}=0.09>0$ steigt im Modell in der Stichprobe mit zunehmenden Alter die Wahrscheinlichkeit in einer festen Partnerschaft zu leben. Die Nullhypothese es gibt keinen Zusammenhang zwischen Alter und Partnerschaft (Ja/Nein) ($H_0: \beta=0$) wird mit einem p-Wert von $0.0145$ zum Niveau $\alpha=0.05$ verworfen. Die Wahrscheinlichkeit in einer festen Partnerschaft zu leben ist in diesem Modell für Frauen höher als für Männer ($\hat{\beta}_{Geschlecht}=1.75>0$), allerdings ist dieser beobachte Effekt mit einem p-Wert von $0.15$ nicht besonders unwahrscheinlich, wenn gilt $\beta_{Geschlecht}=0$. 
+Der Anstieg der Wahrscheinlichkeit für eine feste Partnerschaft ist mit zunehmenden Alter für Frauen zwar geringer als für die Männer ($\hat{\beta}_{Alter:Geschlecht}=-0.06<0$), aber diese beobachtete Wechselwirkung ist ebenfalls nicht besonders unwahrscheinlich, wenn wir annehmen $\beta_{Alter:Geschlecht}=0$.
+
+Dieses Ergebnis wird durch Bootstrapping bestätigt:
+```{r}
+set.seed(1896) # Reproduzierbarkeit
+Bootvtlg <- do(10000) * glm(Partnerschaft ~ Alter*Geschlecht, 
+                            data = resample(Umfrage), family = "binomial")
+confint(Bootvtlg)
+```
+
+Nur der Koeffizient für die Variable Alter überdeckt nicht die $0$.
+
+Die Chance^[$Odds=\frac{P(\text{Partnerschaft=Ja})}{1-P(\text{Partnerschaft=Ja})}$] in einer festen Partnerschaft zu leben ändert sich in der Stichprobe und dem Modell mit jedem Jahr bei den Männern um den Faktor $e^{\hat{\beta}_{Alter}}=e^{0.09}=`r round(exp(0.09), 2)`$, bei den Frauen um $e^{\hat{\beta}_{Alter}+\hat{\beta}_{Alter:Geschlecht}}=e^{0.09-0.06}=`r round(exp(0.03), 2)`$.
+
+Wird für diejenigen, für die die geschätzte Wahrscheinlichkeit einer Partnerschaft größer als $0.5$ ist, also $\hat{P}(\text{Partnerschaft=Ja})>0.5$ vorrausgesagt, dass sie in einer Partnerschaft leben,
+
+```{r}
+Umfrage <- Umfrage %>%
+  mutate(pdach_Partnerschaft = predict(ergglm, type = "response")) %>%
+  mutate(PartnerschaftDach = case_when(pdach_Partnerschaft <= 0.5 ~ "Nein",
+                                       pdach_Partnerschaft > 0.5 ~ "Ja"))
+```
+
+so ergibt sich eine Fehlerrate auf den Datensatz von: 
+
+```{r}
+prop( ~ (Partnerschaft!=PartnerschaftDach), data=Umfrage)
+```
+
+Dies ist nur wenig besser als wenn für alle der Modalwert "Ja" vorrausgesagt wird:
+
+```{r}
+prop( ~ (Partnerschaft!="Ja"), data=Umfrage)
+```
+
+
+
+# Schlussfolgerungen
+
+
+Innerhalb dieser Stichprobe von FOM Studierenden, ohne Berücksichtung von Kovariablen (Attraktivität etc.) gibt es innerhalb einer logistischen Regression einen Zusammenhang zwischen dem Alter und in fester Partnerschaft lebend: mit zunehmenden Alter steigt im Modell der Stichprobe die Wahrscheinlichkeit in einer festen Partnerschaft zu leben. Bei Frauen ist dieser Zusammenhang von der Größe her schwächer und Frauen haben insgesamt eine höhere Wahrscheinlichkeit in einer festen Partnerschaft zu leben, aber diese Unterschiede sind nicht unwahrscheinlich unter $H_0: \beta_j=0$. Allerdings ist die Modellgüte mit einer Fehlklassifikationsrate von `r round(prop( ~ (Partnerschaft!=PartnerschaftDach), data=Umfrage),2)` nicht besonders gut.
+
+Aufgrund der Gelegenheitsstichprobe unter FOM Studierenden ist die Übertragbarkeit (externe Validität) eingeschränkt, auch ist aufgrund der Beobachtungsstudie kein Kausalschluss (interne Validität) möglich.
+
+Darüberhinaus stellt sich die Frage ob alle das gleiche unter einer "festen Partnerschaft" verstehen und ob wahrheitsgemäß geantwortet wurde. 
+
+***
+
+# Danksagung
+
+Die Daten wurden von Frau Eva Wacker erhoben und zur Verfügung gestellt.
+
+# Anhang: Versionshinweise
+
+- Datum erstellt: `r Sys.Date()`
+- R Version: `r getRversion()`
+
+Verwendete Pakte:
+
+- `mosaic` Version: `r packageVersion("mosaic")`
+
+# Literatur
