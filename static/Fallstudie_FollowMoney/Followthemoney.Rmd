@@ -42,9 +42,9 @@ Es werden zum Zeitpunkt $t$ zufällig Händler A und Händler B ausgewählt. Das
 ## Steuern
 
 Steuern können z. B. simuliert werden, so das alle $t_{tax}$ Transaktionen ein zum Vermögen $x_{t_{tax}}$ proportionaler Steuersatz $i$ erhoben wird und die Summe gleichmäßig auf alle verteilt wird:
-\[
+$$
 x^j_{t_{tax}+1}=(1-i)\cdot x^j_{t_{tax}} + \frac{\sum_{j=1}^n i \cdot x^j_{t_{tax}}}{n}
-\]
+$$
 
 \newpage
 
@@ -89,7 +89,7 @@ ttax <- 1000
 
 ## Simulation ohne Steuern
 
-Zum Start der Simulation haben alle das gleiche Vermögen, z. B. $100$:
+Zum Start der Simulation haben alle das gleiche Vermögen, z. B. hier $100$:
 ```{r}
 wealth_oS <- rep(100, n)
 ```
@@ -123,7 +123,7 @@ for (j in 1:trades)
 
 ## Simulation mit Steuern
 
-Zum Start der Simulation haben alle das gleiche Vermögen, z. B. $100$:
+Zum Start der Simulation haben alle das gleiche Vermögen, z. B. hier $100$:
 ```{r}
 wealth_mS <- rep(100, n)
 ```
@@ -203,7 +203,7 @@ Während der Gini Koeffizient im Fall ohne Steuern immer steigt scheint er in de
 
 # 5. Schlussfolgerungen und Ausblick
 
-Ein stark vereinfachtes Modell ("Garagenflohmarkt") kann die Entstehung von Ungleichheit auch bei Nullsummenspielen in abgeschlossenen Systemen erklären. Steuern können ein Instrument sein diese abzumildern.
+Ein **stark vereinfachtes Modell** ("Garagenflohmarkt") kann die Entstehung von Ungleichheit auch bei Nullsummenspielen in abgeschlossenen Systemen erklären. Steuern können in diesem Modell ein Instrument sein diese abzumildern.
 
 Für mögliche Erweiterungen des Basismodells siehe z. B. [@boghosian2014].
 

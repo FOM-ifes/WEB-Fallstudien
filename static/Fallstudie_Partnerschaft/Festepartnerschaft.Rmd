@@ -119,6 +119,11 @@ gf_boxplot(Alter ~ Partnerschaft | Geschlecht, data = Umfrage)
 
 Untere- und Obere Quartil des Alters sind bei Personen die nicht in einer Partnerschaft leben bei den Männern leicht geringer, bei den Frauen ist kein Unterschied zu erkennen. Es gibt Ausreißer im Alter nach oben.
 
+```{r}
+gf_violin(Alter ~ Partnerschaft | Geschlecht, data = Umfrage)
+```
+
+
 ## Kennzahlen
 
 Die deskriptiven Kennzahlen bestätigen die visuellen Eindrücke:
@@ -145,14 +150,14 @@ Im Mittelwert sind diejenigen, die in einer festen Partnerschaft leben ein Jahr 
 
 Zur Modellierung der Wahrscheinlichkeit in einer festen Partnerschaft zu leben wird ein logistisches Modell inkl. Wechselwirkung verwendet:
 
-\[
+$$
 P(\text{Partnerschaft=Ja})=\frac{e^{\beta_0+\beta_{Alter} \cdot Alter + \beta_{Geschlecht} \cdot {Geschlecht}+\beta_{Alter : Geschlecht} \cdot (Alter : Geschlecht)}}{1+e^{\beta_0+\beta_{Alter} \cdot Alter + \beta_{Geschlecht} \cdot {Geschlecht}+\beta_{Alter : Geschlecht} \cdot (Alter : Geschlecht)}}
-\]
+$$
 
 Wobei hier gilt:^[siehe `levels(Umfrage$Geschlecht)`]
-\[
+$$
 Geschlecht=\begin{cases}1, \,\text{weiblich} \\ 0, \,\text{nicht weiblich}\end{cases}
-\]
+$$
 
 
 ```{r}
@@ -206,7 +211,7 @@ Innerhalb dieser Stichprobe von FOM Studierenden, ohne Berücksichtung von Kovar
 
 Aufgrund der Gelegenheitsstichprobe unter FOM Studierenden ist die Übertragbarkeit (externe Validität) eingeschränkt, auch ist aufgrund der Beobachtungsstudie kein Kausalschluss (interne Validität) möglich.
 
-Darüberhinaus stellt sich die Frage ob alle das gleiche unter einer "festen Partnerschaft" verstehen und ob wahrheitsgemäß geantwortet wurde. 
+Darüberhinaus stellt sich bei Umfragen generell die Frage ob alle das gleiche unter den Begriffen, z.B. hier einer "festen Partnerschaft" verstehen und ob wahrheitsgemäß geantwortet wurde. 
 
 ***
 
