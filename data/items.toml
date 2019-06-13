@@ -58,3 +58,11 @@ alt = "Fallstudie '7' - Zusammenhang zwischen Alter, Geschlecht und Beziehungsst
 description = "Logistische Regresion zur Modellierung, ob eine Person in einer festen Partnerschaft lebt."
 url = "Fallstudie_Partnerschaft/Festepartnerschaft.html"
 
+[[items]]
+title = "Fallstudie 8"
+image = "images/full/8.png"
+thumb = "images/thumbs/8.png"
+alt = "Fallstudie '8' - Bildanalyse"
+description = "Komplexitätsreduktion durch Clusteranalyse und Hauptkomponentenanalyse am Beispiel von Bildern."
+url = "Fallstudie_Bildanalyse/Bildanalyse.html"
+
