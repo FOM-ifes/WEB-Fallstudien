@@ -64,14 +64,14 @@ dimension <- dim(img)
 dimension
 ```
 
-Es handelt sich um ein 3-dimensionales `array`: $`r dimension[2]` \times `r dimension[1]`$ Pixel mit  $`r dimension[3]`$ Farben: Rot, Gelb, Blau.
+Es handelt sich um ein 3-dimensionales `array`: $`r dimension[1]` \times `r dimension[2]`$ Pixel mit  $`r dimension[3]`$ Farben: Rot, Gelb, Blau.
 
 
 In Datenmatrix überführen:
 ```{r}
 img_rgb <- data.frame(
-  x = rep(1:dimension[2], each = dimension[1]), # Bildzeile 
-  y = rep(dimension[1]:1, dimension[2]), # Bildspalte
+  x = rep(1:dimension[2], each = dimension[1]), # Bildspalte
+  y = rep(dimension[1]:1, dimension[2]), # Bildzeile
   R = as.vector(img[,,1]), # Rotanteil
   G = as.vector(img[,,2]), # Gelbanteil
   B = as.vector(img[,,3]) # Blauanteil
@@ -96,7 +96,7 @@ Für die $`r nrow(img_rgb)`=`r dimension[2]` \cdot `r dimension[1]`$ Pixel ("Beo
 # 3. Clusteranalyse
 
 k-Means Clusterung der Pixel auf Basis der Farben auf $k=16$ Farbcluster:
-```{r, message=FALSE}
+```{r, warning=FALSE}
 set.seed(1896)
 k_means <- kmeans(img_rgb[,c("R","G","B")], centers = 16, 
                   iter.max = 25, nstart = 10)
@@ -223,10 +223,22 @@ knitr::include_graphics(c("irisversi.jpg","irisversi_reduced_cluster.jpg", "iris
 ```
 
 
-
 Auch wenn hier naive, statistische Verfahren angewendet wurden, ohne die Besonderheiten von Bildern zu berücksichtigen (siehe z. B. [@sonka2014]), so zeigt das Ergebnis doch, wie klassische Verfahren für Bilder angewendet werden können und das trotz Komplexitätsreduktion die relevante Information erhalten bleiben kann.
 
 Auf Bildebene sind die genannten Verfahren in der Praxis häufig Vorverarbeitungsschritte um z. B. Bilder zu vergleichen oder wiederzuerkennen.
+
+## Komplexitätsreduktion
+
+Stellen Sie sich vor, die vielen Pixel wären Ihre Kund\*innen o.ä., Daten aus Ihrem Umfeld.
+
+Mit der **Clusteranalyse** können Sie ähnliche *Beobachtungen* zusammenfassen: anstatt alle Beobachtungen einzeln zu betrachten können Sie (wenige) Prototypen, die Clusterzentren, analysieren um generelle Muster im Kundenstamm zu erkennen.
+
+Bei der **Hauptkomponentenanalyse** fassen Sie *Variablen* zusammen: anstatt alle Variablen einzeln zu betrachten fassen Sie diese zu wenigen Hauptkomponenten zusammen.
+
+In beiden Fällen hat sich die Komplexität Ihrer Aufgabe reduziert.
+
+
+
 
 ***
 
