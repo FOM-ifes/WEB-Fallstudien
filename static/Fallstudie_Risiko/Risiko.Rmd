@@ -1,0 +1,247 @@
+---
+title: "Demographische Unterschiede in Wortassoziationen"
+author: "Karsten Lübke"
+date: "10.04.2019"
+output:
+  html_document:
+    df_print: paged
+  documentclass: article
+  classoption: a4paper
+  pdf_document:
+    fig_height: 3
+    fig_width: 5
+editor_options:
+  chunk_output_type: console
+keywords: Inferenz kategorialer Daten, Zwei-Gruppen Vergleich, Geschlechtsunterschiede,
+  Behavioral Finance, Risiko
+bibliography: fallstudien.bib
+biblio-style: apa
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# 1. Forschungsfrage
+
+Innerhalb der Soziolinguistik werden u. a. Variationen des Sprachgebrauchs analysiert. Unter anderem liegen hier demographische Unterschiede vor, siehe z. B. [@schwartz2013].
+
+Nicht nur im Marketing werden dazu auch Wortassoziationen untersucht. Im Kontext des Behavioral Finance steht dabei auch der Begriff "Risiko" im Fokus, siehe z. B. [@hirshleifer2015].
+
+Daher soll hier untersucht werden, ob es geschlechtsspezifische Unterschiede in der Assoziation des Begriffs "Risiko" bei berufstätig Studierenden gibt, d. h., ob zwischen den Variablen ein Zusammenhang vorliegt.
+
+
+# 2. Studiendesign
+
+Die Operationalisierung der Assoziationen für das Wort "Risiko" erfolgte nach [@grable1999] Die Frage lautet:
+
+> Wenn Sie an das Wort "Risiko" denken, welches der folgenden Wörter fällt Ihnen zuerst ein?
+
+1.  Verlust
+2.  Unsicherheit
+3.  Chance
+4.  Nervenkitzel
+
+Als Stichprobenverfahren wurde hier eine Gelegenheitsstichprobe verwendet: eine anonyme, freiwillige Online Umfrage in verschiedenen Vorlesungen.
+
+
+# 3. Datenerhebung
+
+Die Datenerhebung erfolgte Ende 2017, Anfang 2018 in verschiedenen Statistikvorlesungen. Der exportierte Datei ist im `xlsx` (Excel) Format. Aus Datenschutz und Datensparsamkeitsgründen sind in den Rohdaten nur die hier relevanten Daten enthalten.
+
+```{r}
+# Ggfs. Paket readxl installieren
+# install.packages("readxl")
+
+# Paket laden
+library(readxl)
+
+# Daten einlesen
+risiko <- read_excel("Risikoaversion.xlsx")
+```
+
+
+# 4. Datenanalyse
+
+Vorbereitung:
+
+```{r, message=FALSE}
+# Ggfs. Paket mosaic installieren
+# install.packages("mosaic")
+
+# Paket laden
+library(mosaic)
+
+# Erste Datenübersicht
+inspect(risiko)
+```
+
+Die kategorial-nominalen Variablen `Geschlecht` und `RA4` (Wortassoziation Risiko) wurden numerisch kodiert und werden zunächst als solche interpretiert. 
+
+## Datenvorverarbeitung
+
+Umcodieren der Variable `Geschlecht`:
+
+```{r}
+risiko <- risiko %>%
+  mutate(Geschlecht = case_when(Geschlecht == 1 ~ "maennlich",
+                                Geschlecht == 2 ~ "weiblich"))
+
+```
+
+Benennen der Antwortmöglichkeiten auf die Frage `RA4`: *Wenn Sie an das Wort "Risiko" denken, welches der folgenden Wörter fällt Ihnen zuerst ein?*
+
+```{r}
+risiko <- risiko %>%
+  mutate(RA4 = case_when(RA4 == 1 ~ "1: Verlust",
+                         RA4 == 2 ~ "2: Unsicherheit",
+                         RA4 == 3 ~ "3: Chance",
+                         RA4 == 4 ~ "4: Nervenkitzel"))
+
+```
+
+Außerdem gibt es $1$ fehlenden Wert bei `RA4`. Diese Beobachtung wird entfernt.
+
+```{r}
+risiko <- risiko %>%
+  na.omit()
+```
+
+
+Kontrolle:
+```{r}
+inspect(risiko)
+```
+
+Es liegen $n=`r nrow(risiko)`$ Beobachtungen von `r ncol(risiko)` Variablen vor. Als kategoriale Variablen "`r inspect(risiko)$categorical$name`" und als numerische "`r inspect(risiko)$quantitative$name`".
+
+
+## Grafische Analyse
+
+Eine erste Analyse erfolgt über verschiedene Säulendiagramme:
+
+```{r}
+gf_bar( ~ RA4 | Geschlecht, data = risiko)
+```
+
+```{r}
+gf_bar( ~ RA4, fill=~Geschlecht, data = risiko)
+```
+
+```{r}
+gf_bar( ~ RA4, fill=~Geschlecht,  position = "fill", data = risiko)
+```
+
+Es sind Unterschiede zwischen den Geschlechtern zu erkennen: Männer verbinden überwiegend den Begriff "Chance" mit dem Begriff "Risiko", während eine deutliche Mehrheit der Frauen mit "Risiko" den Begriff "Unsicherheit" verbindet.
+
+
+## Kennzahlen
+
+Die graphisch sichtbaren Zusammenhänge werden auch anhand der relativen Häufigkeiten sichtbar:
+
+```{r}
+tally(RA4 ~ Geschlecht, data = risiko, format = "proportion")
+```
+
+Während z. B. `r round(tally(RA4 ~ Geschlecht, data = risiko, format = "percent")[3,1])`\% der Männer mit dem Begriff "Risiko" den Begriff "Chance" verbinden sind es nur `r round(tally(RA4 ~ Geschlecht, data = risiko, format = "percent")[3,2])`\% der Frauen.
+
+Anders herum betrachtet:
+
+```{r}
+tally(Geschlecht ~ RA4, data = risiko, format = "proportion")
+```
+
+Z. B.: `r round(tally(Geschlecht ~ RA4, data = risiko, format = "proportion")[2,4],2)` derjenigen, die mit "Risiko" den Begriff "Nervenkitzel" verbinden, sind Frauen.
+
+# 5. Inferenz
+
+Die Nullhypothese lautet: Es gibt keinen Zusammenhang zwischen Wortassoziation und Geschlecht, die (kategorial-nominalen) Variablen sind unabhängig voneinander. Die Alternativhypothese ist dementsprechend, dass es einen Zusammenhang gibt.
+
+Für zwei kategoriale Merkmale kann ein Chi-Quadrat Unabhängigkeitstest angewendet werden.
+
+```{r}
+xchisq.test(RA4 ~ Geschlecht, data = risiko)
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+ct <- chisq.test(risiko$RA4, risiko$Geschlecht)
+```
+
+Mit einem p-Wert von `r round(ct$p.value, 4)` wird $H_0$ zum Signifikanzniveau $\alpha=0.05$ verworfen.
+
+Allerdings gibt es eine Warnung, dass die Approximation über die $\chi^2$-Verteilung hier ungenau sein kann. Eine Alternative ist ein Permutationstest^[Vgl. auch Exakte Fisher-Test `fisher.test()`.]:
+
+```{r, warning=FALSE}
+# Wert der Teststastistik
+chi.quadrat <- chisq.test(tally(RA4 ~ Geschlecht, data = risiko))$statistic
+chi.quadrat 
+# Reproduzierbarkeit
+set.seed(1896)
+# Simulation H_0
+Nullvtlg <- do(10000) * 
+  chisq.test(tally(RA4 ~ shuffle(Geschlecht), data = risiko))$statistic
+# Verteilung unter H_0
+gf_histogram( ~ X.squared, data = Nullvtlg) %>%
+  gf_vline(xintercept = ~ chisq.test(tally(RA4 ~ Geschlecht, data = risiko))$statistic)
+# p-Wert simuliert
+prop( ~ (X.squared >= chi.quadrat), data = Nullvtlg)
+```
+
+
+Ein Effektstärkemaß für nominale Assoziationen ist z. B. Cramer's V. Dieses liegt zwischen $0$ und $1$ und ist je größer, je größer der Zusammenhang ist.
+
+```{r, message=FALSE}
+# Ggfs. Paket vcd installieren
+# install.packages("vcd")
+
+library(vcd)
+tally(Geschlecht ~ RA4, data = risiko) %>% 
+  assocstats()
+```
+```{r, include=FALSE}
+v <-tally(Geschlecht ~ RA4, data = risiko) %>% 
+  assocstats()
+```
+
+Mit einem $V=`r round(v$cramer,2)`$ liegt ein mittlerer Zusammenhang vor.
+
+
+
+# 6. Schlussfolgerungen
+
+Gibt es Unterschiede zwischen den Geschlechtern in den Wortassoziationen?
+
+Anhand der vorliegenden Daten lautet die Antwort: Ja, die beobachteten Daten sind unter der Nullhypothese der Unabhängigkeit von Geschlecht und Wortassoziation eher unwahrscheinlich (p-Wert=`r round(ct$p.value, 4)` bei mittlerem Effekt ($V=`r round(v$cramer,2)`$) .
+
+Aber es liegt eine Gelegenheitsstichprobe vor, Kovariablen wurden nicht berücksichtigt. Interne und externe Validität sind eingeschränkt, auch ist der Stichprobenumfang mit $n=`r nrow(risiko)`$ nicht besonders groß. So gibt es z. B. in dieser Gelegenheitsstichprobe einerseits Unterschiede in der Altersverteilung der Geschlechter, andererseits scheint es auch Unterschiede in der Altersverteilung der Assoziationen zu geben:
+
+```{r}
+gf_boxplot(Alter ~ Geschlecht, data = risiko)
+gf_boxplot(Alter ~ RA4, data = risiko)
+```
+
+Eine solche, gemeinsame Modellierung von Wortassoziation, zusammen mit Geschlecht und Alter kann z. B. über Loglineare Modelle (bei klassiertem Alter) oder Multinomiale logistische Regression erfolgen.
+
+
+***
+
+# Danksagung
+
+Die Daten wurden innerhalb der Master Thesis zum Thema "Behavioral Finance: Einfluss von Geschlecht und Narzissmus auf die Risikoaversion von Anlegern" erhoben.
+
+
+# Anhang: Versionshinweise
+
+- Datum erstellt: `r Sys.Date()`
+- R Version: `r getRversion()`
+
+Verwendete Pakte:
+
+- `mosaic` Version: `r packageVersion("mosaic")`
+- `ggformula` Version: `r packageVersion("ggformula")`
+- `readxl` Version: `r packageVersion("readxl")`
+- `vcd` Version: `r packageVersion("vcd")`
+
+# Literatur
+
