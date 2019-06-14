@@ -262,6 +262,8 @@ Verwendete Pakte:
 - `ggformula` Version: `r packageVersion("ggformula")`
 - `readxl` Version: `r packageVersion("readxl")`
 - `vcd` Version: `r packageVersion("vcd")`
+- `dabestr` Version: `r packageVersion("dabestr")`
+
 
 # Literatur
 
