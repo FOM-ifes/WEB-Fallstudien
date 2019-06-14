@@ -183,7 +183,7 @@ Nullvtlg <- do(10000) *
   chisq.test(tally(RA4 ~ shuffle(Geschlecht), data = risiko))$statistic
 # Verteilung unter H_0
 gf_histogram( ~ X.squared, data = Nullvtlg) %>%
-  gf_vline(xintercept = ~ chisq.test(tally(RA4 ~ Geschlecht, data = risiko))$statistic)
+  gf_vline(xintercept = ~ chi.quadrat)
 # p-Wert simuliert
 prop( ~ (X.squared >= chi.quadrat), data = Nullvtlg)
 ```
