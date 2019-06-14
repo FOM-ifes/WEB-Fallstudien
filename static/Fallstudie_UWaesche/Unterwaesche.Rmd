@@ -2,20 +2,20 @@
 title: "Kaufen Frauen öfter Unterwäsche?"
 author: "Karsten Lübke"
 date: "10.04.2019"
-
-output: 
+output:
+  html_document:
+    df_print: paged
+  documentclass: article
+  classoption: a4paper
   pdf_document:
     fig_height: 3
     fig_width: 5
-  documentclass: article
-  classoption: a4paper
-editor_options: 
+editor_options:
   chunk_output_type: console
-  
+keywords: Inferenz numerischer Daten, Zwei-Gruppen Vergleich, Geschlechtsunterschiede,
+  Einkaufsverhalten
 bibliography: fallstudien.bib
 biblio-style: apa
-
-keywords: Inferenz numerischer Daten, Zwei-Gruppen Vergleich, Geschlechtsunterschiede, Einkaufsverhalten
 ---
 
 ```{r setup, include=FALSE}
@@ -195,6 +195,22 @@ quantile( ~ diffmean, probs = c(0.025, 0.975), data = Bootvtlg)
 ```
 
 Das $95\%$-Resampling-Konfidenzintervall für die Differenz der Mittelwerte geht von `r floor(quantile( ~ diffmean, probs = c(0.025, 0.975), data = Bootvtlg)[1])` bis `r ceiling(quantile( ~ diffmean, probs = c(0.025, 0.975), data = Bootvtlg)[2])`^[Die mittlere Differenz von $0$ Tagen (kein Unterschied) ist nicht im Konfidenzintervall enthalten.] ($\bar{x}_w-\bar{x}_m=`r round(diffmean(Tage ~ Geschlecht, data = uwaesche))`; \quad se=`r round(se.boot, 2)`$). 
+
+Das Paket `dabestr` bietet ein sehr schöne Übersicht des Ergebnisses über *Estimation Plots* [@ho2019]:
+
+```{r, message=FALSE, warning=FALSE}
+# Ggfs. Paket dabestr installieren
+# install.packages("dabestr")
+
+# Paket laden
+library(dabestr)
+dabest(uwaesche, Geschlecht, Tage, 
+         idx = c("m", "w"), 
+         paired = FALSE) %>%
+  plot()
+
+```
+
 
 Aufgrund der Größe des Stichprobe^[Zentraler Grenzwertsatz] kann auch ein parametrischer t-Test (gerichtet) durchgeführt werden, der zum selben Ergebnis kommt.^[Beachte, dass statt $\mu_w-\mu_m$ (Permutation, `diffmean()`) im t-Test $\mu_m-\mu_w$ analysiert wird.]
 

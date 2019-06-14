@@ -1,11 +1,11 @@
 
-[[items]]
-title = "Fallstudie 1 - Unterwäsche"
+title = "Fallstudie 1"
 image = "images/full/1.png"
 thumb = "images/thumbs/1.png"
 alt = "Fallstudie '1' - 'Unterwäsche'"
-description = "Irgendeine coole Fallstudie mit Unterwäsche"
-url = "Fallstudie_UWaesche/Unterwaesche.pdf"
+description = "Vergeleich des Zeitpunktes des letzten Kaufs von Unterwäsche von Männern und Frauen"
+url = "Fallstudie_UWaesche/Unterwaesche.html"
+
 
 [[items]]
 title = "Fallstudie 2"
@@ -39,3 +39,10 @@ alt = "Fallstudie '5' - Bildanalyse"
 description = "Komplexitätsreduktion durch Clusteranalyse und Hauptkomponentenanalyse am Beispiel von Bildern."
 url = "Fallstudie_Bildanalyse/Bildanalyse.html"
 
+[[items]]
+title = "Fallstudie 6"
+image = "images/full/6.png"
+thumb = "images/thumbs/5.png"
+alt = "Fallstudie '6' - Wortassoziation"
+description = "Vergleich von Wortassoziationen."
+url = "Fallstudie_Risiko/Risiko.html"
