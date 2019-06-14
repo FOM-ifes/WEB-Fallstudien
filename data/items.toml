@@ -1,68 +1,41 @@
 [[items]]
-title = "Fallstudie 'Unterwäsche'"
+title = "Fallstudie 1"
 image = "images/full/1.png"
 thumb = "images/thumbs/1.png"
-alt = "Fallstudie 'Unterwäsche'"
-description = "Lorem Ipusm skjldfj jskldfj jskldfsadkjlf sjkalfdjklf dsfjdkslfj  "
-url = "https://data-se.netlify.com/2019/03/26/reducing-residual-variance-in-modeling/"
-
+alt = "Fallstudie '1' - 'Unterwäsche'"
+description = "Vergeleich des Zeitpunktes des letzten Kaufs von Unterwäsche von Männern und Frauen"
+url = "Fallstudie_UWaesche/Unterwaesche.hmtl"
 
 
 [[items]]
 title = "Fallstudie 2"
 image = "images/full/2.png"
 thumb = "images/thumbs/2.png"
-alt = "Fallstudie '2'"
-description = "A simple grid theme for Hugo. A kind of boilerplate to perform anyone or anything quickly. Portfolio, collection, bookmarks, contacts and so on."
-url = "https://xkcd.com/927/"
-
+alt = "Fallstudie '2' - Modellierung Preis-Absatz Funktion"
+description = "Lineare und linearisierte Regression zur Schätzung der Preis-Absatz Funktion."
+url = "Fallstudie_PreisAbsatz/PreisAbsatz.html"
 
 [[items]]
-title = "Fallstudie 3 - Unterwäsche"
+title = "Fallstudie 3"
 image = "images/full/3.png"
 thumb = "images/thumbs/3.png"
-alt = "Fallstudie '3' - 'Unterwäsche'"
-description = "Irgendeine coole Fallstudie mit Unterwäsche"
-url = "Fallstudie_UWaesche/Unterwaesche.pdf"
-
+alt = "Fallstudie '3' - Garagenflohmarkt und Ungleichheit"
+description = "(Einfache) Marktsimulation zur Entstehung von Ungleichheit."
+url = "Fallstudie_FollowMoney/Followthemoney.html"
 
 [[items]]
 title = "Fallstudie 4"
 image = "images/full/4.png"
 thumb = "images/thumbs/4.png"
-alt = "Fallstudie '4'"
-description = "A simple grid theme for Hugo. A kind of boilerplate to perform anyone or anything quickly. Portfolio, collection, bookmarks, contacts and so on."
-url = "https://github.com/aerohub/hugrid"
+alt = "Fallstudie '4' - Zusammenhang zwischen Alter, Geschlecht und Beziehungsstatus"
+description = "Logistische Regresion zur Modellierung, ob eine Person in einer festen Partnerschaft lebt."
+url = "Fallstudie_Partnerschaft/Festepartnerschaft.html"
 
 [[items]]
 title = "Fallstudie 5"
 image = "images/full/5.png"
 thumb = "images/thumbs/5.png"
-alt = "Fallstudie '5' - Modellierung Preis-Absatz Funktion"
-description = "Lineare und linearisierte Regression zur Schätzung der Preis-Absatz Funktion."
-url = "Fallstudie_PreisAbsatz/PreisAbsatz.html"
-
-[[items]]
-title = "Fallstudie 6"
-image = "images/full/6.png"
-thumb = "images/thumbs/6.png"
-alt = "Fallstudie '6' - Garagenflohmarkt und Ungleichheit"
-description = "(Einfache) Marktsimulation zur Entstehung von Ungleichheit."
-url = "Fallstudie_FollowMoney/Followthemoney.html"
-
-[[items]]
-title = "Fallstudie 7"
-image = "images/full/7.png"
-thumb = "images/thumbs/7.png"
-alt = "Fallstudie '7' - Zusammenhang zwischen Alter, Geschlecht und Beziehungsstatus"
-description = "Logistische Regresion zur Modellierung, ob eine Person in einer festen Partnerschaft lebt."
-url = "Fallstudie_Partnerschaft/Festepartnerschaft.html"
-
-[[items]]
-title = "Fallstudie 8"
-image = "images/full/8.png"
-thumb = "images/thumbs/8.png"
-alt = "Fallstudie '8' - Bildanalyse"
+alt = "Fallstudie '5' - Bildanalyse"
 description = "Komplexitätsreduktion durch Clusteranalyse und Hauptkomponentenanalyse am Beispiel von Bildern."
 url = "Fallstudie_Bildanalyse/Bildanalyse.html"
 
