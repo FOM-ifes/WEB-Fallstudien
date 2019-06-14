@@ -1,11 +1,11 @@
-
+[[items]]
 title = "Fallstudie 1"
 image = "images/full/1.png"
 thumb = "images/thumbs/1.png"
 alt = "Fallstudie '1' - 'Unterwäsche'"
 description = "Vergeleich des Zeitpunktes des letzten Kaufs von Unterwäsche von Männern und Frauen"
 url = "Fallstudie_UWaesche/Unterwaesche.html"
-
+zipurl ="Fallstudie_UWaesche/Unterwaesche.zip"
 
 [[items]]
 title = "Fallstudie 2"
@@ -14,6 +14,7 @@ thumb = "images/thumbs/2.png"
 alt = "Fallstudie '2' - Modellierung Preis-Absatz Funktion"
 description = "Lineare und linearisierte Regression zur Schätzung der Preis-Absatz Funktion."
 url = "Fallstudie_PreisAbsatz/PreisAbsatz.html"
+#zipurl = "Fallstudie_PreisAbsatz/PreisAbsatz.zip"
 
 [[items]]
 title = "Fallstudie 3"
@@ -22,6 +23,7 @@ thumb = "images/thumbs/3.png"
 alt = "Fallstudie '3' - Garagenflohmarkt und Ungleichheit"
 description = "(Einfache) Marktsimulation zur Entstehung von Ungleichheit."
 url = "Fallstudie_FollowMoney/Followthemoney.html"
+#zipurl = "Fallstudie_FollowMoney/Followthemoney.zip"
 
 [[items]]
 title = "Fallstudie 4"
@@ -30,6 +32,7 @@ thumb = "images/thumbs/4.png"
 alt = "Fallstudie '4' - Zusammenhang zwischen Alter, Geschlecht und Beziehungsstatus"
 description = "Logistische Regresion zur Modellierung, ob eine Person in einer festen Partnerschaft lebt."
 url = "Fallstudie_Partnerschaft/Festepartnerschaft.html"
+#zipurl = "Fallstudie_Partnerschaft/Festepartnerschaft.zip"
 
 [[items]]
 title = "Fallstudie 5"
@@ -38,6 +41,7 @@ thumb = "images/thumbs/5.png"
 alt = "Fallstudie '5' - Bildanalyse"
 description = "Komplexitätsreduktion durch Clusteranalyse und Hauptkomponentenanalyse am Beispiel von Bildern."
 url = "Fallstudie_Bildanalyse/Bildanalyse.html"
+#zipurl = "Fallstudie_Bildanalyse/Bildanalyse.zip"
 
 [[items]]
 title = "Fallstudie 6"
@@ -46,3 +50,5 @@ thumb = "images/thumbs/5.png"
 alt = "Fallstudie '6' - Wortassoziation"
 description = "Vergleich von Wortassoziationen."
 url = "Fallstudie_Risiko/Risiko.html"
+#zipurl = "Fallstudie_Risiko/Risiko.zip"
+

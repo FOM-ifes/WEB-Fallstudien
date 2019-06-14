@@ -17,7 +17,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     # Meta
     title = "Fallstudiensammlung zur Datenanalyse"
     subtitle = "Es könnten 42 sein."
-    author = "ifes"
+    author = "FOM ifes et al."
     description = "Hier steht eine Beschreibung"
     keywords = "FOM ifes Fallstudien Data-Literacy Statistik Statistics Data-Science"
 
