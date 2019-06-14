@@ -262,5 +262,5 @@ Verwendete Pakte:
 - `readxl` Version: `r packageVersion("readxl")`
 - `dabestr` Version: `r packageVersion("dabestr")`
 
-# Literatur
 
+# Literatur
