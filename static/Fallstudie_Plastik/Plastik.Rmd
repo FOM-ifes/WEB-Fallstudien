@@ -59,7 +59,7 @@ Eine erste Übersicht liefert ein Liniendiagramm:
 gf_line(Production ~ Year, data = Plastic)
 ```
 
-Man erkennt den Einbruch in der Wirtschaftskrise 2008 sowie evtl. Auswirkungen der Ölpreiskrise Mitte und Ende der 70er Jahre.
+Man erkennt den Einbruch in der Wirtschaftskrise 2008 sowie evtl. Auswirkungen der Ölpreiskrise Mitte und Ende der 1970er Jahre.
 
 
 # 3. Datenmodellierung
