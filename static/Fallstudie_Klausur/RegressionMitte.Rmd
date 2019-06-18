@@ -188,7 +188,7 @@ Ein Achsenabschnitt ($\beta_0$) ist nicht nötig^[In der R Formel entfernt durch
 
 $`r round(rsquared(erglm)*100)`\%$ der Variation der Punktzahl in Mathematik 2 können durch ein lineares Modell in dieser Stichprobe modelliert werden. Mit $\hat{\beta_1}=`r round(coef(erglm)[1],2)`>0$ zeigt sich: in der Stichprobe gibt es einen positiven linearen Zusammenhang zwischen den Punktzahlen Mathematik 1 und 2.
 
-Gleichzeitig gilt aber: $\hat{\beta_1}=`r round(coef(erglm)[1],2)`<1$, d.h. dass die (Punkt-)Prognose für einen Studierenden mit $z_i^{\text{Mathematik 1}}=1>0$ lautet $\hat{z}_i^{\text{Mathematik 2}}=`r round(coef(erglm)[1],2)` \cdot 1=`r round(coef(erglm)[1],2)`$, also (relativ) *schlechter*, für einen mit $z_i^{\text{Mathematik 1}}=-1<0$ lautet $\hat{z}_i^{\text{Mathematik 2}}=`r round(coef(erglm)[1],2)` \cdot (-1)=-`r round(coef(erglm)[1],2)`$, also (relativ) *besser*.
+Gleichzeitig gilt aber: $\hat{\beta_1}=`r round(coef(erglm)[1],2)`<1$, d.h. dass die (Punkt-)Prognose für einen Studierenden mit z.B. $z_i^{\text{Mathematik 1}}=1>0$ lautet $\hat{z}_i^{\text{Mathematik 2}}=`r round(coef(erglm)[1],2)` \cdot 1=`r round(coef(erglm)[1],2)`$, also (relativ) *schlechter*, für einen mit z.B. $z_i^{\text{Mathematik 1}}=-1<0$ lautet $\hat{z}_i^{\text{Mathematik 2}}=`r round(coef(erglm)[1],2)` \cdot (-1)=-`r round(coef(erglm)[1],2)`$, also (relativ) *besser*.
 
 Ohne den Effekt der **Regression zur Mitte**, der bei wiederholter Messung immer auftritt wenn $|\rho|<1$ gilt, würde gelten (rote Linie):
 ```{r}
@@ -217,22 +217,7 @@ plotModel(erglm)
 summary(erglm)
 ```
 
-Regression zur Mitte: es ergibt sich mit $\hat{\beta_1}=`r round(coef(erglm)[2],2)`<0$ ein negativer Zusammenhang. 
-Um dies Ergebnis kritisch zu hinterfragen wird $\beta_1=0$ simuliert und die gerichtete Hypothese $H_0: \beta_1 \geq 0$ gegen $H_A: \beta_1<0$ geprüft:
-
-```{r}
-set.seed(1896)
-NullvtlgReg <- do(10000) * lm(diffM2M1 ~ shuffle(Punkte_M1), data = Mathepunkte)
-# Verteilung unter H_0
-gf_histogram( ~ Punkte_M1, data = NullvtlgReg) %>%
-  gf_vline(xintercept = ~ coef(erglm)[2])
-# Kritischer Wert (gerichtet)
-quantile( ~ Punkte_M1, prob = 0.05, data = NullvtlgReg)
-# p-Wert (gerichtet)
-prop( ~ (Punkte_M1 < coef(erglm)[2]), data = NullvtlgReg)
-```
-
-Die in der Stichprobe beobachtete (negative) Steigung ist also sehr unwahrscheinlich, wenn wir annehmen, dass es keinen Zusammenhang gibt: in keiner der $10000$ Simulationen kam der Wert der Stichprobe vor, daher p-Wert<$1/10000$.
+Regression zur Mitte: es ergibt sich mit $\hat{\beta_1}=`r round(coef(erglm)[2],2)`<0$ ein negativer Zusammenhang im Modell der Stichprobe (Beobachtungsdaten). 
 
 
 
