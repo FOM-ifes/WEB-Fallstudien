@@ -60,3 +60,12 @@ alt = "Fallstudie '7' - Entwicklung Plastiproduktion"
 description = "Modellierung zeitliche Entwicklung Plastiproduktion."
 url = "Fallstudie_Plastik/Plastik.html"
 #zipurl = "Fallstudie_Plastik/Plastik.zip"
+
+[[items]]
+title = "Fallstudie 8"
+image = "images/full/8.png"
+thumb = "images/thumbs/8.png"
+alt = "Fallstudie '8' - Klausurpunkte"
+description = "Regression zur Mitte am Beispiel Klausurpunkte."
+url = "Fallstudie_Klausur/RegressionMitte.html"
+#zipurl = "Fallstudie_Plastik/Plastik.zip"
