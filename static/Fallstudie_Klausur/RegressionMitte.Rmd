@@ -51,8 +51,8 @@ Zur Untersuchung dieser Frage wird eine Gelegenheitsstichprobe von zwei Klausure
 
 Die Punktzahlen samt Studierendenidentifikation (Matrikelnummer, aus Datenschutzgründen verändert) aus einem Semester liegen als Excel Datei vor.
 
-```{r}
-# Ggs. Paket readxl installieren
+```{r, message=FALSE}
+# Ggfs. Paket readxl installieren
 # install.packges("readxl")
 
 # Paket laden
@@ -62,28 +62,15 @@ library(readxl)
 Mathe1 <- read_excel("Mappe1.xlsx")
 # Mathematik 2
 Mathe2 <- read_excel("Mappe2.xlsx")
+
+# Ggfs. Paket mosaic installieren
+# install.packges("mosaic")
+
+# Paket laden
+library(mosaic)
 ```
 
 # 4. Datenanalyse
-
-Datenbeschreibung:
-
-```{r, message=FALSE}
-# Ggfs. Paket mosaic installieren
-# install.packages(mosaic)
-
-# Paket laden
-library("mosaic")
-
-# Erste Datenübersicht Mathematik 1
-inspect(Mathe1)
-# Erste Datenübersicht Mathematik 2
-inspect(Mathe2)
-```
-
-Während die Klausur Mathematik 1 von $n_1=`r nrow(Mathe1)`$ Studierenden geschrieben wurde, waren es in der Klausur Mathematik 2  $n_2=`r nrow(Mathe2)`$.
-
-*Hinweis:* Man erkennt, dass beide Klausuren gut ausgefallen sind: die Mittelwerte liegen über dem langfristigen Mittelwert der beiden Klausuren.^[Ob es ein besonders guter Kurs, eher einfache Klausuren oder besonders gute Lehre war, weiß der Autor leider nicht mehr.]
 
 Über die Matrikelnummer können beide Datensätze verbunden werden. Außerdem wird die Differenz gebildet und die Daten werden standardisiert ($z$-Transformiert), so dass sie direkt verglichen werden können:
 
@@ -93,8 +80,6 @@ Mathepunkte <- Mathe1 %>%
   mutate(diffM2M1 = Punkte_M2-Punkte_M1) %>%
   mutate(M1_Stand = zscore(Punkte_M1),
          M2_Stand = zscore(Punkte_M2))
-
-inspect(Mathepunkte)
 ```
 
 
@@ -103,21 +88,20 @@ inspect(Mathepunkte)
 Univariate Punktverteilung der Klausurpunkte Mathematik 1 bzw. Mathematik 2.
 ```{r}
 gf_histogram( ~ Punkte_M1, data = Mathe1, binwidth = 3, boundary = 0) %>%
-  gf_vline(xintercept = 30) %>%
   gf_lims(x = c(0,60))
 gf_histogram( ~ Punkte_M2, data = Mathe2, binwidth = 3, boundary = 0) %>%
-  gf_vline(xintercept = 30) %>%
   gf_lims(x = c(0,60))
 ```
 
 Interessanterweise sind beide Verteilung eher linksschief, wobei beide eine leichte Bi-Modalität erkennen lassen.
 
+*Hinweis:* Beide Klausuren sind (sehr) gut ausgefallen: die Verteilung der beiden Klausuren liegt über der jeweiligen langfristigen Verteilung.^[Ob es ein besonders guter Kurs, eher einfache Klausuren oder besonders gute Lehre war, weiß der Autor leider nicht mehr.] Damit ist die Repräsentativität eingeschränkt und somit auch die externe Validität.^[Gleichwohl ist das beschriebene Phänomen universell.]
+
 Streudiagramm der Klausurpunkte derjenigen, die an beiden Klausuren teilnahmen:
 
 ```{r}
 gf_point(Punkte_M2 ~ Punkte_M1, data = Mathepunkte) %>%
-  gf_vline(xintercept = 30) %>%
-  gf_hline(yintercept = 30) %>%
+  gf_smooth(se = TRUE) %>%
   gf_lims(x = c(0,60), y = c(0,60))
 ```
 
@@ -127,19 +111,19 @@ Betrachtet man den Zusammenhang der Differenz (d. h. der Veränderung Mathematik
 
 ```{r}
 gf_point(diffM2M1 ~ Punkte_M1, data = Mathepunkte) %>%
-  gf_hline(yintercept = 0) %>%
-  gf_vline(xintercept = mean( ~ Punkte_M1, data = Mathepunkte))
+  gf_smooth(se = TRUE) %>%
+  gf_hline(yintercept = ~0) %>%
+  gf_vline(xintercept = ~mean( ~ Punkte_M1, data = Mathepunkte)) %>%
+  gf_lims(x = c(0,60), y = c(-60,60))
 ```
 
 Es scheint einen negativen Zusammenhang zu geben: Studierende mit besonders wenigen Punkten in Mathematik 1 haben eine positive Differenz, Studierende mit vielen Punkten in Mathematik 1 haben eher eine geringere oder negative Punktedifferenz.
 
 ## Kennzahlen
 
-Die visuellen Eindrücke werden durch die deskriptiven Kennzahlen untermauert:
+Die visuellen Eindrücke werden durch die Korrelationskoeffizienten bestätigt:
 
 ```{r}
-favstats(~ Punkte_M1, data = Mathepunkte)
-favstats(~ Punkte_M2, data = Mathepunkte)
 cor(Punkte_M2 ~ Punkte_M1, data = Mathepunkte)
 cor(diffM2M1 ~ Punkte_M1, data = Mathepunkte)
 ```
@@ -191,9 +175,9 @@ $`r round(rsquared(erglm)*100)`\%$ der Variation der Punktzahl in Mathematik 2 k
 Gleichzeitig gilt aber: $\hat{\beta_1}=`r round(coef(erglm)[1],2)`<1$, d.h. dass die (Punkt-)Prognose für einen Studierenden mit z.B. $z_i^{\text{Mathematik 1}}=1>0$ lautet $\hat{z}_i^{\text{Mathematik 2}}=`r round(coef(erglm)[1],2)` \cdot 1=`r round(coef(erglm)[1],2)`$, also (relativ) *schlechter*, für einen mit z.B. $z_i^{\text{Mathematik 1}}=-1<0$ lautet $\hat{z}_i^{\text{Mathematik 2}}=`r round(coef(erglm)[1],2)` \cdot (-1)=-`r round(coef(erglm)[1],2)`$, also (relativ) *besser*.
 
 Ohne den Effekt der **Regression zur Mitte**, der bei wiederholter Messung immer auftritt wenn $|\rho|<1$ gilt, würde gelten (rote Linie):
-```{r}
+```{r, warning=FALSE}
 plotModel(erglm) %>%
-  gf_abline(slope=1, col="red")
+  gf_abline(intercept = ~0, slope = ~1, col="red")
 ```
 
 Bootstrapping ergibt hier:
