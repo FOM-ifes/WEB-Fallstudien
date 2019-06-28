@@ -3,7 +3,7 @@ title = "Fallstudie 1"
 image = "images/full/1.png"
 thumb = "images/thumbs/1.png"
 alt = "Fallstudie '1' - 'Unterwäsche'"
-description = "Vergeleich des Zeitpunktes des letzten Kaufs von Unterwäsche von Männern und Frauen"
+description = "Vergleich des Zeitpunktes des letzten Kaufs von Unterwäsche von Männern und Frauen"
 url = "Fallstudie_UWaesche/Unterwaesche.html"
 zipurl ="Fallstudie_UWaesche/Unterwaesche.zip"
 
@@ -69,3 +69,14 @@ alt = "Fallstudie '8' - Klausurpunkte"
 description = "Regression zur Mitte am Beispiel Klausurpunkte."
 url = "Fallstudie_Klausur/RegressionMitte.html"
 #zipurl = "Fallstudie_Plastik/Plastik.zip"
+
+
+[[items]]
+title = "Fallstudie 9"
+image = "images/full/Quant-Beerufe-WiPsy.png"
+thumb = "images/thumbs/Quant-Beerufe-WiPsy.png.png"
+alt = "Fallstudie '9' - Quantitative Tätigkeiten der Wirtschaftspsychologie"
+description = "Auswahl an quantitativen Fragestellungen der Wirtschaftspsychologie."
+url = "Fallstudie_Wipsy-Business/Fallstudien-WiPsy-Business.html"
+#zipurl = "Fallstudie_Wipsy-Business/Fallstudien-WiPsy-Business.zip"
+
