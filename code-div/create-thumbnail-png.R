@@ -21,6 +21,7 @@ create_thumb_imgfile <- function(title_casestudy,
   
   library(tidyverse)
   library(here)
+  library(magick)
   
   
   # collate vector of tags to one string:
@@ -29,7 +30,8 @@ create_thumb_imgfile <- function(title_casestudy,
   fom_green <- background_color
   
   # write image to this folder:
-  img_folder <- paste0(here::here(),"/static/images/thumbs")
+  img_full_folder <- paste0(here::here(),"/static/images/full")
+  img_thumbs_folder <- paste0(here::here(),"/static/images/thumbs")
   
   
   
@@ -42,19 +44,25 @@ create_thumb_imgfile <- function(title_casestudy,
     scale_x_continuous(limits = c(-3,3)) +
     scale_y_continuous(limits = c(-3,3)) +
     annotate("text", x = 0, y = 0, label = title_casestudy,
-             color = "white", size = 6) +
+             color = "white", size = 10) +
     annotate("text", x = 0, y = -2, label = tags_pasted,
-             color = "grey80", size = 5) +
+             color = "grey80", size = 8) +
     theme_void()
   
   # show image:
   gg_thumb
   
   # save to disk if desired:
-  if (save_to_disk == TRUE) ggsave(gg_thumb, 
-                                  filename = paste0(img_folder, "/", title_short, ".png"),
-                                  height = 3.13 , width = 3.14, dpi = 72)   
-  
+  if (save_to_disk == TRUE) {
+    ggsave(gg_thumb, filename = paste0(img_full_folder, "/", title_short, ".png"),
+           height = 17.6, width = 17.6, units = "cm", dpi = 72)   
+    
+    full_image <- image_read(paste0(img_full_folder, "/", title_short, ".png"))
+    
+    thumb <- image_scale(full_image, "250")
+    
+    image_write(thumb, path = paste0(img_thumbs_folder, "/", title_short, ".png"))
+  }
 }
 
 
