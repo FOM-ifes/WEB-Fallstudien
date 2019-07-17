@@ -1,0 +1,510 @@
+---
+title: "Prädiktoren der Lebenserwartung"
+author: "Sebastian Sauer"
+tags:
+- Lebenserwartung
+- Geovisualisierung
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    df_print: paged
+    number_sections: yes
+    toc: yes
+---
+
+
+
+# Präambel
+
+## Forschungsfrage
+
+
+Die Lebenserwartung der Menschen variiert, wie jeder weiß. Die Variation wird u.a. erklärt durch das Land, in dem jemand lebt, aber auch durch die Zeit -- in den letzten Jahrzehnten ist die Lebenserwartung zum Glück deutlich gestiegen. Allerdings nicht in jedem Jahr und in jedem Land in gleichem Maße. In dieser Fallstudie soll der Einfluss von Land, Region und Zeit auf die Lebenserwartung untersucht werden. Konkret soll die Lebenserwartung im Alter von 10 Jahren modelliert werden.
+
+
+## Daten
+
+Die Daten stammen von [Our World in Data](https://ourworldindata.org), genauer gesagt aus [dieser Analyse](https://ourworldindata.org/life-expectancy#a-comparative-perspective-life-expectancy-at-the-age-of-10). Weitere Quellen sind [hier](https://ourworldindata.org/life-expectancy#data-sources) dokumentiert.
+
+
+## Studiendesign
+
+Es handelt sich um eine retrospektive Beobachtungsstudie. Die Daten wurden ex post erhoben.
+
+
+# Datenanalyse
+
+
+## Setup
+
+
+
+Zuerst `mosaic` laden; nicht vergessen! Falls eines der Pakete auf Ihrer Maschine nicht installiert ist, bitte mit `install.packages("name_des_pakets")` installieren.
+
+```{r load-libs, message = FALSE}
+library(mosaic)
+library(countrycode)
+library(rnaturalearth)
+library(tidyverse)
+```
+
+
+
+## Daten importieren und aufbereiten
+
+
+## Importieren
+
+Gehen wir davon aus, dass die Daten im Arbeitsverzeichnis liegen:
+
+```{r load-data}
+exp_raw <- read.csv("life-expectancy-at-age-10.csv")
+
+head(exp_raw)
+```
+
+Ich habe die Tabelle `exp_raw` genannt, um zu verdeutlichen, dass es sich um die "rohen", unbearbeiteten Daten handelt. Häufig muss man die Daten noch modifizieren, da bietet es sich an, klar anzuzeigen, was die unbehandelten Daten und was die behandelten Daten sind.
+
+
+Die Spalte `e10..years.` fasst die Lebenserwartung zum Alter von 10 Jahren. Allerdings ist der Name der Spalte nicht so schön. Benennen wir die Spalte um:
+
+```{r}
+exp <- exp_raw %>% 
+  rename(e10 = e10..years.)  # neu = alt
+```
+
+
+## Kontinente hinzufügen
+
+Es wäre doch schön, für jedes Land zu wissen, zu welchem Kontinent (oder Weltregion) es gehört. Natürlich kann man das händisch hinzufügen (z.B. in Excel). Aber komfortabler ist es, wenn man solche schnöde Arbeit den Computer erledigen lässt. In R gibt es ein Paket namens `countrycode` (und eine Funktion mit gleichem Namen), das die Arbeit für uns übernimmt. Hier bilden wir den Landesnamen auf das zugehörige Kontinent ab; alternativ hätten wir auch die Spalte `Code` verwenden können. Allerdings ist nicht ganz klar, um *welchen* Code es sich handelt (vielleicht [ISO](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes)). Das zeigt, das ein gutes Codebuch zu jedem Datensatz gehört!
+
+
+
+```{r add-continents}
+exp2 <- exp %>% 
+  mutate(continent = countrycode(sourcevar = Entity,  # Spalte, in der das Land steht
+                                 origin = "country.name",  # Eingage: Name (nicht z.B. ISO-Code) des Landes
+                                 destination = "continent"))  # gewünschte Ausgabe: Name des Kontinents
+```
+
+Dazu haben wir eine Spalte mit `mutate()` angelegt, die den Namen des Kontinents für jedes Land fasst. R informiert uns, dass einige Länder nicht einem Kontinent zugeordnet werden konnten. Schauen wir uns das genauer an. Wie viele Fälle liefern fehlende Werte zurück?
+
+
+```{r}
+exp2 %>% 
+  summarise(is_na_sum = is.na(continent) %>% sum())
+```
+
+Schauen wir uns ein Beispiel näher an:
+
+
+```{r}
+exp2 %>% 
+  filter(Entity == "Timor")
+```
+
+
+Vielleicht klappt es mit der Übersetzung der Spalte `Code` besser? Gehen wir mal davon aus, dass es sich um ISO-3661-Codes handelt. 
+
+
+```{r add-continents2}
+exp2 <- exp2 %>% 
+  mutate(continent2 = countrycode(sourcevar = Code,  # Spalte, in der das Land steht
+                                 origin = "iso3c",  # Eingage: Name (nicht z.B. ISO-Code) des Landes
+                                 destination = "continent"))  # gewünschte Ausgabe: Name des Kontinents
+```
+
+
+
+
+```{r}
+exp2 %>% 
+  summarise(is_na_sum = is.na(continent2) %>% sum())
+```
+
+
+Besser; 60 fehlende Werte. Aber welche Fälle sind übrig? Schauen wir uns die mal an:
+
+```{r}
+exp2 %>% 
+  filter(is.na(continent2)) %>% 
+  distinct(Entity)
+```
+
+Auf Deutsch übersetzt heißt die Syntax oben:
+
+````
+Hey R, nimm die Tabelle exp2 UND DANN  
+filtere die Fälle, die keine Werte haben für continent2 UND DANN
+zeige alle verschiedenen Werte für Entity
+````
+
+
+Laut [dieser Quelle](https://support.cybersource.com/s/article/What-is-the-country-code-for-the-Channel-Islands) gehören die Channel Islands zu UK (GB). Es ist vielleicht pragmatisch, dies einfach zu übernehmen.
+
+
+```{r}
+exp3 <- exp2 %>% 
+  mutate(continent2 = as.character(continent2)) %>% 
+  mutate(continent2 = case_when(
+    Entity == "Channel Islands" ~ "Europe",
+    Entity == "World" ~ "World",
+    TRUE ~ continent2))
+```
+
+
+Prüfen wir, ob jetzt alle fehlenden Werte bei `continent2` beseitigt sind:
+
+```{r}
+exp3 %>% 
+  filter(is.na(continent2))
+```
+
+Gut.
+
+
+
+##  Was ist die mittlere Lebenserwartung pro Kontinent im Jahr 2015 (laut den Daten)?
+
+
+Für welche Jahre liegen Daten vor? 
+
+```{r}
+exp3 %>% 
+  distinct(Year) %>% 
+  pull()
+```
+
+Möchte man die Daten nicht als Tabelle haben (braucht weniger Platz im Output), sondern aus der Tabelle eine Spalte *herausziehen*, kann man dafür den Befehl `pull()` verwenden.
+
+Man sieht, dass die Daten offenbar nur in Fünf-Jahres-Schritten erhoben wurden. Wählen wir das Jahr 2015: 
+
+```{r}
+exp_2015 <- filter(exp3, Year == 2015)
+```
+
+### Deskriptivstatistik 
+
+Berechnen wir die typischen Deskriptivstatistiken pro Kontinent:
+
+
+```{r}
+favstats(e10 ~ continent2, data = exp_2015)
+```
+
+Welche Länder gehören eigentlich zu "Oceania"?
+
+```{r}
+filter(exp_2015, continent == "Oceania") %>% 
+  pull(Entity)
+```
+
+
+Vermutlich würde es Sinn machen, Nord- und Südamerika getrennt auszuweisen.
+
+
+### Visualisierung
+
+```{r}
+gf_boxplot(e10 ~ continent2, 
+         data = exp_2015) %>% 
+  gf_point(stat = "summary", 
+           color = "red", 
+           size = 5) %>% 
+  gf_jitter(width = .1,
+            alpha = .3) %>% 
+  gf_labs(x= "Kontinent", y = "Lebenserwartung im Alter von 10 Jahren",
+          caption = "Daten von 'Our World in Data'",
+          title = "Lebenserwartung nach Kontinenten im Jahr 2015")
+```
+
+Da `World` kein Kontinent ist, nehmen wir es heraus, aber zeichnen eine horizontale Linie für den Wert der Welt insgesamt.
+
+
+```{r}
+
+exp_2015 %>% 
+  filter(continent2 != "World") %>% 
+  gf_boxplot(e10 ~ continent2) %>% 
+  gf_point(stat = "summary", 
+           color = "red", 
+           size = 5) %>% 
+  gf_jitter(width = .1,
+            alpha = .3) %>% 
+  gf_labs(x= "Kontinent", y = "Lebenserwartung im Alter von 10 Jahren",
+          caption = "Daten von 'Our World in Data'. Die horizontale Linie gibt den weltweiten Wert wieder.",
+          title = "Lebenserwartung nach Kontinenten im Jahr 2015.") %>% 
+  gf_hline(yintercept = ~65.3, linetype = "dashed")
+```
+
+
+
+## Extremwerte
+
+Welche drei Länder weisen die geringste/höchste Lebenserwartung im Jahr 2015 auf?
+
+
+```{r}
+exp_2015 %>% 
+  arrange(e10) %>%  # sortiert von klein nach groß bzgl. e10
+  slice(1:3)
+```
+
+`slice()` "schneidet" eine "Scheibe" an Zeilen heraus, hier 1 bis 3.
+
+In gleicher Manier:
+
+```{r}
+exp_2015 %>% 
+  arrange(-e10) %>% 
+  slice
+````
+
+
+Das Minuszeichen dreht die Sortierreihenfolge um, d.h. von groß zu klein.
+
+
+
+## Gibt es einen Zusammenhang von Lebenserwartung und dem Jahr?
+
+
+### Deskriptivstatistik
+
+```{r}
+cor(e10 ~ Year, data = exp3)
+```
+
+
+Oh, es gibt fehlende Werte im Datensatz, daher streckt der Befehl `cor()` alle Viere von sich. Löschen wir mal alle Zeilen mit fehlenden Werten und hoffen, das wir nicht viele Daten verlieren:
+
+
+```{r}
+exp_ohne_na <- exp3 %>% 
+  na.omit()
+```
+
+Hm, ca. 500 Zeilen. Vielleicht doch lieber so:
+
+
+
+```{r}
+cor(e10 ~ Year, data = exp3 %>% na.omit())
+```
+
+
+### Inferenzstatistik
+
+Inferenzstatistik macht hier wenig Sinn, da es unklar klar ist, auf welche Grundgesamtheit verallgemeinert werden soll. Alle Länder der Welt sind ja schon enthalten. Zu argumentieren, wir verallgemeinern auf alle Zeiten (Jahre) ist gewagt, denn unsere Stichprobe an Jahren ist sicher alles andere als eine Zufallsstichprobe aus der Menge aller Jahre der Welt ... Verzichten wir also auf eine Inferenzstatistik.
+
+
+
+### Visualisierung
+
+```{r}
+gf_point(e10 ~ Year, data = exp3, alpha = .2) %>% 
+  gf_smooth() %>% 
+  gf_facet_wrap(~ continent2)
+```
+
+
+`gf_facet_wrap()` macht ein "Teil-Bildchen" (Facette) pro Wert von Kontinent. Allerdings liegen die Daten für die meisten Länder erst ab ca. 1950 vor. Und die Prognosen in die Zukunft sehen wir mal kritisch. Vorhersagen sind bekanntlich schwierig. Vor allem, wenn sie die Zukunft betreffen, heißt es ... `gf_smooth()` legt eine Kurve in "die Mitte" des Punkteschwarms: Für jeden X-Werte wird der mittlere Y-Wert berechnet (nahe X-Werte fließen auch noch etwas ein), und dann werden die Punkte mit einer Linie verbunden.
+
+
+
+```{r}
+exp3 %>% 
+  filter(Year > 2016 & Year > 1949) %>% 
+  gf_jitter(e10 ~ Year, alpha = .2) %>% 
+  gf_smooth() %>% 
+  gf_facet_wrap(~ continent2)
+```
+
+Wir sehen durchweg einen Anstieg der Lebenserwartung - sehr erfreulich! Freilich fußt der Anstieg auf unterschiedlichen Sockeln, also Ausgangsniveaus. Ist die Höhe des Anstiegs unterschiedlich je Kontinent? Für diese Frage modellieren wir die Lebenserwartung als Funktion des Kontinents und des Jahres.
+
+Bleiben wir beim realistischen Teil der Daten:
+
+```{r}
+exp_1950_2015 <- exp3 %>% 
+  filter(Year > 2016 & Year > 1949)
+```
+
+
+### Modellierung
+
+Berechnen wir dazu einige Modelle und vergleichen diese dann:
+
+
+1. Das Nullmodell: Kein Prädiktor
+2. Nur `Year` als Prädikator
+3. `Year` und `continent2`, aber ohne Interaktionseffekt
+3. `Year*continent2`, also mit Interaktionseffekt
+
+
+```{r}
+lm0 <- lm(e10 ~ 1, data = exp_1950_2015)
+lm1 <- lm(e10 ~ Year, data = exp_1950_2015)
+lm2 <- lm(e10 ~ Year + continent2, data = exp_1950_2015)
+lm3 <- lm(e10 ~ Year*continent2, data = exp_1950_2015)
+```
+
+Betrachten wir die $R^2$-Werte jedes Modells:
+
+```{r}
+rsquared(lm0) %>% str()
+r2s_vector <- c(rsquared(lm0), rsquared(lm1), rsquared(lm2), rsquared(lm3))
+r2s_vector %>% str()
+```
+
+
+Um die Werte in einer kleiner Grafik zu zeigen, erstellen wir zuerst eine Tabelle (`tibble()`), weil `gf_XXX()` nur Spaß an Tabellen hat.
+
+
+```{r}
+r2s <- tibble(Modellname = c("lm0", "lm1", "lm2", "lm3"),
+              r2s = r2s_vector)
+r2s
+```
+
+Und jetzt das Diagramm:
+
+
+```{r}
+gf_point(r2s ~ Modellname, data = r2s, size = 4) %>% 
+  gf_line(group = ~1)  # Es gibt nur eine Gruppe, also alle Punkte sollen verbunden werden
+```
+
+
+Wie man sieht, ist der Zuwachs an erklärter Varianz von `lm2` auf `lm3` nicht groß. Der Interaktionseffekt scheint also nicht stark zu sein. Besser wir verzichten auf ihn und resümieren, dass die Daten eher die Hypothese stützen, dass der Zuwachs in Lebenserwartung gleich oder ähnlich groß ist zwischen den Kontinenten.
+
+Wir können die Güte der Modelle bzw. die *Unterschiede* der Güte auf Signifikanz testen. Genau genommen werden die Likelihoods der Modelle verglichen und anhand der Freiheitsgrade normiert. Aber lassen wir die technischen Details an dieser Stelle. Diesen Modellvergleich können anhand der Funktion `anova()` durchführen, der uns die Quadratsummen zurückliefert und einen p-Wert (letzte Spalte).
+
+```{r}
+anova(lm0, lm1, lm2, lm3)
+```
+
+
+Wir sehen, dass das letzte Modell (`Model 4`) nicht signifikant besser ist als das vorherige Modell. Das bestärkt unseren Schluss, die $H_0$ der Gleichheit der Modellgüte der beiden Modelle, nicht zu verwerfen.
+
+
+
+# Geovisualisierung
+
+
+## Weltkarte zeichnen
+
+Analysiert man Länder (oder allgemeiner: Gegenden) der Erde, so bietet sich eine Geo-Visualisierung - wie eine Weltkarte - an. Das lässt sich recht einfach mit R bewerkstelligen.
+
+Im Paket `rnaturalearth` sind die Weltkarten gespeichert. Ziehen wir uns die Länder der "natural earth" (ne) zunächst heraus:
+
+```{r}
+world <- ne_countries(scale = "medium", returnclass = "sf")
+```
+
+
+Die Tabelle ist sehr umfangreich; viele interessante Daten sind vorhanden. Die Geo-Daten verstecken sich in der Spalte `geometry`.  Die technischen Details interessieren uns hier nicht.
+
+```{r}
+str(world)
+```
+
+
+Wir haben den Befehl angewiesen, dass wir keine super genauen Grenzen benötigen, sondern dass uns eine mittlere Genauigkeit ausreicht. Das Datenformat nennt sich hier `sf` (simple feature), was zur Zeit ein Standardformat ist, um geografische Daten (GPS-Koordinaten für Grenzen und Punkte etc.) zu speichern. Aber wie gesagt, die technischen Details sind hier nicht interessant für uns. Mit dem Befehl `gf_sf` lassen sich dann Geo-Daten plotten:
+
+
+
+
+```{r}
+gf_sf(data = world)
+```
+
+
+## Karte einfärben (Choropleth)
+
+Damit wir die Länder entsprechend ihrer Lebenserwartung einfärben können, müssen wir die Tabelle mit den Geo-Daten und die Tabelle mit den Lebensdaten zusammenführen. Das besorgt der Befehl `full_join()`. Damit der Befehl weiß, welche Zeilen zusammen gehören, erklären wir ihm "Füge gleiche Länder zusammen, dazu schaue in der Spalte `Entity` bzw. in der Spalte `sovereignt` (Tabelle `world`)". 
+
+```{r}
+exp_2015_joined <- world %>% 
+  left_join(exp_2015, by = c("sovereignt" = "Entity"))
+  
+```
+
+Das eigentliche Plotten ist schnell erledigt:
+
+```{r}
+gf_sf(fill = ~e10, data = exp_2015_joined) 
+```
+
+Praktischerweise findet `gg_sf()` die Geo-Daten selbständig in der Tabelle, wir müssen nicht extra erklären, welche Spalte gemeint ist. Sehr komfortabel.
+
+
+Das Farbschema könnte noch schöner sein:
+
+
+```{r}
+gf_sf(fill = ~e10, data = exp_2015_joined) %>% 
+  gf_refine(scale_fill_viridis_c()) %>% 
+  gf_labs(fill = "Lebenserwartung",
+          title = "Lebenserwatung im Alter von 10 Jahren")
+```
+
+Viel besser. Mit `gf_refine()` "verfeinern` wir das Diagramm. In diesem Fall besteht das Verfeinern im Ändern des Farbschemas (wie nehmen *Viridis*), um die Füllfarbe zu ändern. Da es sich um eine kontinuierliche Variable handelt (d.h. metrisch), soll ein kontinuierliches Farbschema (mit fließenden, weichen Übergangen) verwendet werden ("_c" wie continuous). 
+
+Halt! Für die USA gibt es keine Werte! Kann das sein? Das ist ein gutes Beispiel dafür, dass eine Datenanalyse ein iterativer Prozess ist, d.h. einzelne Schritte - wie Datenvorverarbeitung - müssen immer wieder ausgeführt werden.
+
+# Auf der Suche nach den USA
+
+
+Versuchen wir, die USA in den Daten zu finden:
+
+```{r}
+exp3 %>% 
+  filter(str_detect(Entity, "USA|United States"))
+```
+
+die USA existieren also doch. Übrigens: `str_detect(spalte, suchterm)` liefert für jeden Wert von `spalte` zurück, ob sich der Suchterm (`suchterm`) darin befindet. Man bekommt also einen Vektor mit `TRUE, FALSE, TRUE, ..." und so weiter. `filter()` erlaubt, so einen logischen Vektor als Grundlage des Filterns herzunehmen.
+
+
+Schauen wir, wie viele Länder zu unseren Suchterm passen (also `TRUE` zurückliefern):
+
+```{r}
+exp3 %>% 
+  filter(str_detect(Entity, "USA|United States")) %>% 
+  pull(Entity) %>% 
+  unique()  # zeigt nur unterschiedliche (unique) Werte an
+```
+
+Aha, "United States" und die "Virgin Islands".
+
+Schauen wir mal nach, ob es die USA auch in der Tabelle `world` gibt:
+
+
+```{r}
+world %>% 
+  select(sovereignt) %>% 
+  filter(str_detect(sovereignt, "USA|United States")) %>% 
+  pull(sovereignt) %>% 
+  unique()
+```
+
+Ah - die USA heißen hier "United States of America". Das ist nicht exakt zu "United States" aus `exp3`. Daher hat das Verheiraten (der `full_join()`) oben nicht funktioniert. Besser wir nehmen den ISO-Code zum Vereinigen. Codes sind (hoffentlich) "bruchsicher", so dass das Vereinigen klappen sollte. Der relevant Code scheint in Spalte `adm0_a3` zu Hause zu sein: 
+
+
+```{r}
+exp_2015_joined <- world %>% 
+  left_join(exp_2015, by = c("adm0_a3" = "Code"))
+  
+```
+
+Und Plotten:
+
+```{r}
+gf_sf(fill = ~e10, data = exp_2015_joined) %>% 
+  gf_refine(scale_fill_viridis_c())
+```
+
+Hat funktioniert!
+
+
+
+

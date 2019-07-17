@@ -80,3 +80,14 @@ description = "Auswahl an quantitativen Fragestellungen der Wirtschaftspsycholog
 url = "Fallstudie_Wipsy-Business/Fallstudien-WiPsy-Business.html"
 #zipurl = "Fallstudie_Wipsy-Business/Fallstudien-WiPsy-Business.zip"
 
+
+[[items]]
+title = "Fallstudie 10"
+image = "images/full/Quant-LE.png"
+thumb = "images/thumbs/Quant-LE.png"
+alt = "Fallstudie '10' - Prädiktoren der Lebenserwartung"
+description = "Unterscheidet sich die Lebenserwartung in den Kontinenten?"
+url = "Fallstudie_Wipsy-Business/Fallstudien-Lebenserwartung.html"
+#zipurl = "Fallstudie_Wipsy-Business/Fallstudie-Lebenserwartung.zip"
+
+
