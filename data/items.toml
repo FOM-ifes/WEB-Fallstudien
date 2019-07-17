@@ -83,11 +83,11 @@ url = "Fallstudie_Wipsy-Business/Fallstudien-WiPsy-Business.html"
 
 [[items]]
 title = "Fallstudie 10"
-image = "images/full/Quant-LE.png"
-thumb = "images/thumbs/Quant-LE.png"
+image = "images/full/10.png"
+thumb = "images/thumbs/10.png"
 alt = "Fallstudie '10' - Prädiktoren der Lebenserwartung"
 description = "Unterscheidet sich die Lebenserwartung in den Kontinenten?"
-url = "Fallstudie_Wipsy-Business/Fallstudien-Lebenserwartung.html"
-#zipurl = "Fallstudie_Wipsy-Business/Fallstudie-Lebenserwartung.zip"
+url = "Fallstudie_Lebenserwartung/Fallstudie-Lebenserwartung.html"
+#zipurl = "Fallstudie_Lebenserwartung/Fallstudie-Lebenserwartung.zip"
 
 
