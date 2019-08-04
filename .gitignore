@@ -15,6 +15,18 @@ public/**
 *.rdx
 *_files/
 *.RData
+*_cache/
+
+
+# logs:
+*.log
+
+# intermediate stuff:
+*.utf8.*
+*.utf8
+*.knit.md
+
+
 
 
 
