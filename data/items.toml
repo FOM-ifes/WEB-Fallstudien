@@ -91,3 +91,13 @@ url = "Fallstudie_Lebenserwartung/Fallstudie-Lebenserwartung.html"
 #zipurl = "Fallstudie_Lebenserwartung/Fallstudie-Lebenserwartung.zip"
 
 
+[[items]]
+title = "Fallstudie 11"
+image = "images/full/NYC Flights.png"
+thumb = "images/thumbs/NYC Flights.png"
+alt = "Fallstudie '11' - Verspätungen der New Yorker Flüge"
+description = "Was sind die Prädiktoren der Verspätungen der New Yorker Flüge?"
+url = "Fallstudie_NYCFlights/Fallstudie-nyc-flights.html"
+#zipurl = "Fallstudie_Lebenserwartung/Fallstudie-Lebenserwartung.zip"
+
+
