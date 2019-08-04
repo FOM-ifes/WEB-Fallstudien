@@ -1,8 +1,23 @@
+# R project files:
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
 *.Rproj
+
+# Public/compiled files
 public/**
+
+# Data bases/caching:
+*.rds
+*.rdb
+*.RDb
+*.rdx
+*_files/
+*.RData
+
+
+
+
 
 
