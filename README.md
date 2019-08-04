@@ -50,9 +50,30 @@ url = "Fallstudie_UWaesche/Unterwaesche.pdf"
 
 ```
 
+
+
 4. Änderungen ins Repository bestätigen:
     Die Änderungen von "data/items.toml" und das neue Unterverzeichnis "static/Fallstudie-UWaesche" müssen nun noch via git *commited* und nach GitHub *gepushed* werden.
     
+    
+5. Icons ("Kachelbilder") erzeugen:
+
+Man betrachte das Beispiel in `create-icon-for-casestudy.R`. Dort die relevanten Daten in die Funktion eintragen (das Beispiel überschreiben):
+
+````
+source("code-div/create-thumbnail-png-funs.R")
+
+create_imgfiles(title_casestudy = "Prädiktoren der Verspätungen der New Yorker Flüge", 
+                title_short = "NYC Flights",
+                tags = "Regression, Prognose")
+```
+
+Die resultierenden Bilddateien heißen z.B. `NYC Flights.png`. Diese Namen müssen in `items.toml` eingetragen werden.
+
+
+
+
+                
 
     
 ## Wo findet man die Seite?
