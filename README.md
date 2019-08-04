@@ -63,10 +63,13 @@ Man betrachte das Beispiel in `create-icon-for-casestudy.R`. Dort die relevanten
 ````
 source("code-div/create-thumbnail-png-funs.R")
 
-create_imgfiles(title_casestudy = "Prädiktoren der Verspätungen der New Yorker Flüge", 
+create_imgfiles(title_casestudy = "Prädiktoren der Verspätungen\nder New Yorker Flüge", 
                 title_short = "NYC Flights",
                 tags = "Regression, Prognose")
 ```
+
+Es bietet sich an, Zeilenumbrüche mit `\n` einzufügen, damit der Text nicht zu lang für das Icon wird.
+
 
 Die resultierenden Bilddateien heißen z.B. `NYC Flights.png`. Diese Namen müssen in `items.toml` eingetragen werden.
 
