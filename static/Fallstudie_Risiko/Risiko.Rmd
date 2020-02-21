@@ -221,6 +221,26 @@ gf_boxplot(Alter ~ Geschlecht, data = risiko)
 gf_boxplot(Alter ~ RA4, data = risiko)
 ```
 
+Bzw. als *Estimation Plot* [@ho2019]:
+
+```{r, message=FALSE, warning=FALSE}
+# Ggfs. Paket dabestr installieren
+# install.packages("dabestr")
+
+# Paket laden
+library(dabestr)
+dabest(risiko, Geschlecht, Alter, 
+         idx = c("maennlich", "weiblich"), 
+         paired = FALSE) %>%
+  plot()
+
+dabest(risiko, RA4, Alter,
+       idx = c("1: Verlust", "2: Unsicherheit", "3: Chance", "4: Nervenkitzel"),
+       paired = FALSE) %>%
+  plot()
+
+```
+
 Eine solche, gemeinsame Modellierung von Wortassoziation, zusammen mit Geschlecht und Alter kann z. B. über Loglineare Modelle (bei klassiertem Alter) oder Multinomiale logistische Regression erfolgen.
 
 
@@ -242,6 +262,7 @@ Verwendete Pakte:
 - `ggformula` Version: `r packageVersion("ggformula")`
 - `readxl` Version: `r packageVersion("readxl")`
 - `vcd` Version: `r packageVersion("vcd")`
+- `dabestr` Version: `r packageVersion("dabestr")`
+
 
 # Literatur
-

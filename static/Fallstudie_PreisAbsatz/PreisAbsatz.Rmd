@@ -103,6 +103,13 @@ gf_point(Purchase ~ Price, data = Milk) %>%
   gf_line(fitted(linear1) ~ Milk$Price)
 ```
 
+*Hinweis*: Die über den gesamten Wertebereich von $x$ nicht angemessene lineare Modellierung erkennt man auch am Muster im Residualplot:
+
+```{r}
+gf_point(resid(linear1) ~ fitted(linear1))
+```
+
+
 Eine lokale Anpassung für den Bereich von $0.89$ bis $1.59$:
 
 ```{r}

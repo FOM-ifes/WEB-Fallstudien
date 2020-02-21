@@ -1,0 +1,226 @@
+---
+title: 'Regression zur Mitte: Klausurpunkte'
+author: "Karsten Lübke"
+date: "05.10.2018"
+output:
+  html_document:
+    df_print: paged
+  documentclass: article
+  classoption: a4paper
+  pdf_document:
+    fig_height: 3
+    fig_width: 5
+editor_options:
+  chunk_output_type: console
+keywords: Lineare Regression, Regression zur Mitte, gepaarte Stichproben
+bibliography: fallstudien.bib
+biblio-style: apa
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# 1. Forschungsfrage
+
+Das Phänomen **Regression zur Mitte** wurde schon im 19. Jahrhundert entdeckt [@galton1886]: Große Eltern haben tendenziell große Kinder, besonders große Eltern aber tendenziell aber etwas kleinere Kinder -- und umgekehrt.
+
+[@kahneman2011, S. 177] führt als seine Lieblingsgleichung auf
+
+\begin{eqnarray*}
+\text{Erfolg} &=& \text{Talent }+ \text{ Glück} \\
+\text{Großer Erfolg} &=& \text{Ein bisschen mehr Talent }+ \text{ viel mehr Glück} \\
+\end{eqnarray*}
+
+Mathematisch/ statistisch kann das Phänomen wie folgt beschrieben werden:
+
+$$
+x_i=\mu+\epsilon_i,
+$$
+
+wobei $\epsilon_i$ das Glück bzw. Pech wiederspiegelt.^[Der Autor glaubt, dass in der Gleichung ein Teil fehlt. Es müsste lauten: Erfolg=Talent+Einsatz+Glück.] Wenn also an einem Tag $i$ das Glück einem hold ist, $\epsilon_i$ also besonders groß ist, ist die Wahrscheinlichkeit hoch, dass es an einem anderen Tag, z. B. $i+1$, kleiner ist, also $\epsilon_{i+1}<\epsilon_i$. Umgekehrt, nach einem besonders schlechten Tag $j$  ($\epsilon_j$ sehr klein) ist die Wahrscheinlichkeit groß, dass ein anderer Tag (z. B. $j+1$) besser läuft, d. h. $\epsilon_{j+1}>\epsilon_j$. 
+
+Gilt dies auch für Mathematik Klausuren?
+
+# 2. Studiendesign
+
+Zur Untersuchung dieser Frage wird eine Gelegenheitsstichprobe von zwei Klausuren derselben Kohorte verwendet: Die Punktzahl in der Klausur Mathematik 1 (Finanzmathematik, Lineare Algebra) sowie die in der Klausur Mathematik 2 (Analysis). Die Punktzahl ist metrisch und intervallskaliert. Der Wertebereich geht jeweils von $0$ bis $60$ Punkten.
+
+# 3. Datenerhebung
+
+Die Punktzahlen samt Studierendenidentifikation (Matrikelnummer, aus Datenschutzgründen verändert) aus einem Semester liegen als Excel Datei vor.
+
+```{r, message=FALSE}
+# Ggfs. Paket readxl installieren
+# install.packges("readxl")
+
+# Paket laden
+library(readxl)
+
+# Mathematik 1
+Mathe1 <- read_excel("Mappe1.xlsx")
+# Mathematik 2
+Mathe2 <- read_excel("Mappe2.xlsx")
+
+# Ggfs. Paket mosaic installieren
+# install.packges("mosaic")
+
+# Paket laden
+library(mosaic)
+```
+
+# 4. Datenanalyse
+
+Über die Matrikelnummer können beide Datensätze verbunden werden. Außerdem wird die Differenz gebildet und die Daten werden standardisiert ($z$-Transformiert), so dass sie direkt verglichen werden können:
+
+```{r}
+Mathepunkte <- Mathe1 %>%
+  inner_join(Mathe2, by = "Matrikelnummer") %>%
+  mutate(diffM2M1 = Punkte_M2-Punkte_M1) %>%
+  mutate(M1_Stand = zscore(Punkte_M1),
+         M2_Stand = zscore(Punkte_M2))
+```
+
+
+## Grafische Analyse
+
+Univariate Punktverteilung der Klausurpunkte Mathematik 1 bzw. Mathematik 2.
+```{r}
+gf_histogram( ~ Punkte_M1, data = Mathe1, binwidth = 3, boundary = 0) %>%
+  gf_lims(x = c(0,60))
+gf_histogram( ~ Punkte_M2, data = Mathe2, binwidth = 3, boundary = 0) %>%
+  gf_lims(x = c(0,60))
+```
+
+Interessanterweise sind beide Verteilung eher linksschief, wobei beide eine leichte Bi-Modalität erkennen lassen.
+
+*Hinweis:* Beide Klausuren sind (sehr) gut ausgefallen: die Verteilung der beiden Klausuren liegt über der jeweiligen langfristigen Verteilung.^[Ob es ein besonders guter Kurs, eher einfache Klausuren oder besonders gute Lehre war, weiß der Autor leider nicht mehr.] Damit ist die Repräsentativität eingeschränkt und somit auch die externe Validität.^[Gleichwohl ist das beschriebene Phänomen universell.]
+
+Streudiagramm der Klausurpunkte derjenigen, die an beiden Klausuren teilnahmen:
+
+```{r}
+gf_point(Punkte_M2 ~ Punkte_M1, data = Mathepunkte) %>%
+  gf_smooth(se = TRUE) %>%
+  gf_lims(x = c(0,60), y = c(0,60))
+```
+
+Es ist ein positiver Zusammenhang erkennbar: Studierende mit vielen Punkten in Mathematik 1 haben tendenziell auch viele Punkte in Mathematik 2.
+
+Betrachtet man den Zusammenhang der Differenz (d. h. der Veränderung Mathematik 2 zu Mathematik 1), so ergibt sich ein anderes Bild:
+
+```{r}
+gf_point(diffM2M1 ~ Punkte_M1, data = Mathepunkte) %>%
+  gf_smooth(se = TRUE) %>%
+  gf_hline(yintercept = ~0) %>%
+  gf_vline(xintercept = ~mean( ~ Punkte_M1, data = Mathepunkte)) %>%
+  gf_lims(x = c(0,60), y = c(-60,60))
+```
+
+Es scheint einen negativen Zusammenhang zu geben: Studierende mit besonders wenigen Punkten in Mathematik 1 haben eine positive Differenz, Studierende mit vielen Punkten in Mathematik 1 haben eher eine geringere oder negative Punktedifferenz.
+
+## Kennzahlen
+
+Die visuellen Eindrücke werden durch die Korrelationskoeffizienten bestätigt:
+
+```{r}
+cor(Punkte_M2 ~ Punkte_M1, data = Mathepunkte)
+cor(diffM2M1 ~ Punkte_M1, data = Mathepunkte)
+```
+
+
+# 5. Modellierung
+
+## Mathematik 2 *einfacher* als Mathematik 1?
+
+Während die Vorlesung Mathematik 1 über 44 UE lief, lief Mathematik 2 über 32 UE. Spiegelt sich das *mehr* an Stoff auch in einem schlechteren Ergebnis wieder? Betrachtet wird dazu *je Studierenden* die individuelle Differenz:
+$$
+x_i^d=x_i^{\text{Mathematik 2}}-x_i^{\text{Mathematik 1}}
+$$
+
+Für diese Variable $X^d$ lautet dementsprechend die Nullhypothese, dass der Mittelwert $\mu^d=0$ ist. Um dies zu überprüfen kann z. B. Bootstrapping verwendet werden.^[Eine parametrische Alternative wäre der t-Test für gepaarte/ verbundene Stichproben.] 
+
+```{r}
+set.seed(1896)
+
+BootvtlgDiff <- do(10000) * mean(~diffM2M1, data = resample(Mathepunkte))
+gf_histogram( ~ mean, data = BootvtlgDiff)
+confint(BootvtlgDiff)
+```
+
+Die $0$ ist nicht im $95\%$ Bootstrap Konfidenzintervall enthalten. Es gibt also Hinweise, dass in der Population die Mittelwerte abweichen. Da $\bar{x}^d>0$ wurde im Mittelwert das bessere Ergebnis in Mathematik 2 erzielt.
+
+*Hinweis*: Hier kann auch eine Selbst-Selektionsverzerrung vorliegen: Studierende mit schlechten Noten in Mathematik 1 könnten sich überlegt haben bei Mathematik 2 nicht anzutreten. Hier werden nur die analysiert, für die beide Punktzahlen vorliegen. Gleichwohl beeinflusst dies auch die beiden univariaten Ergebnisse (s.o.).
+
+
+## Zusammenhang Mathematik 1 und 2?
+
+Eine lineare Regression, d. h.
+
+$$
+z_i^{\text{Mathematik 2}}= \beta_1 \cdot z_i^{\text{Mathematik 1}}+\epsilon_i
+$$
+
+ergibt:
+```{r}
+erglm <- lm(M2_Stand ~ M1_Stand - 1, data = Mathepunkte)
+plotModel(erglm)
+summary(erglm)
+```
+
+Ein Achsenabschnitt ($\beta_0$) ist nicht nötig^[In der R Formel entfernt durch `-1`.], da die Variablen standardisiert wurden, d.h. der Mittelwert $=0$ ist.
+
+$`r round(rsquared(erglm)*100)`\%$ der Variation der Punktzahl in Mathematik 2 können durch ein lineares Modell in dieser Stichprobe modelliert werden. Mit $\hat{\beta_1}=`r round(coef(erglm)[1],2)`>0$ zeigt sich: in der Stichprobe gibt es einen positiven linearen Zusammenhang zwischen den Punktzahlen Mathematik 1 und 2.
+
+Gleichzeitig gilt aber: $\hat{\beta_1}=`r round(coef(erglm)[1],2)`<1$, d.h. dass die (Punkt-)Prognose für einen Studierenden mit z.B. $z_i^{\text{Mathematik 1}}=1>0$ lautet $\hat{z}_i^{\text{Mathematik 2}}=`r round(coef(erglm)[1],2)` \cdot 1=`r round(coef(erglm)[1],2)`$, also (relativ) *schlechter*, für einen mit z.B. $z_i^{\text{Mathematik 1}}=-1<0$ lautet $\hat{z}_i^{\text{Mathematik 2}}=`r round(coef(erglm)[1],2)` \cdot (-1)=-`r round(coef(erglm)[1],2)`$, also (relativ) *besser*.
+
+Ohne den Effekt der **Regression zur Mitte**, der bei wiederholter Messung immer auftritt wenn $|\rho|<1$ gilt, würde gelten (rote Linie):
+```{r, warning=FALSE}
+plotModel(erglm) %>%
+  gf_abline(intercept = ~0, slope = ~1, col="red")
+```
+
+Bootstrapping ergibt hier:
+```{r}
+set.seed(1896)
+
+Bootvtlg <- do(10000) *lm(M2_Stand ~ M1_Stand -1, data = resample(Mathepunkte))
+gf_histogram( ~ M1_Stand, data = Bootvtlg)
+confint(Bootvtlg)
+```
+
+Es gilt, dass das $95\%$ Konfidennzintervall für $\beta_1$ (`M1_Stand`) weder die $0$ noch die $1$ enthält.
+
+Dies Phänomen sieht man auch, wenn man $x^d$ als lineares Modell von $x_i^{\text{Mathematik 2}}$ darstellt:
+$$
+x_i^d= \beta_0 + \beta_1 \cdot x_i^{\text{Mathematik 1}}+\epsilon_i
+$$
+```{r}
+erglm <- lm(diffM2M1 ~ Punkte_M1, data = Mathepunkte)
+plotModel(erglm)
+summary(erglm)
+```
+
+Regression zur Mitte: es ergibt sich mit $\hat{\beta_1}=`r round(coef(erglm)[2],2)`<0$ ein negativer Zusammenhang im Modell der Stichprobe (Beobachtungsdaten). 
+
+
+
+# 6. Schlussfolgerungen
+
+Ja, auch bei Klausurpunkten zeigt sich die Regression zur Mitte: zwar sind erfolgreiche Studierende in der einen Klausur auch erfolgreich in der anderen, aber diejenigen die besonders viel Pech (oder Glück) in der einen hatten, haben im Mittelwert in der anderen weniger Pech (oder Glück).
+
+
+
+***
+
+
+# Anhang: Versionshinweise
+
+- Datum erstellt: `r Sys.Date()`
+- R Version: `r getRversion()`
+
+Verwendete Pakte:
+
+- `mosaic` Version: `r packageVersion("mosaic")`
+
+# Literatur

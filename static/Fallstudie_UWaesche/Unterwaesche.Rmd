@@ -260,6 +260,7 @@ Verwendete Pakte:
 - `ggformula` Version: `r packageVersion("ggformula")`
 - `lsr` Version: `r packageVersion("lsr")`
 - `readxl` Version: `r packageVersion("readxl")`
+- `dabestr` Version: `r packageVersion("dabestr")`
+
 
 # Literatur
-

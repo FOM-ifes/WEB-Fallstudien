@@ -3,7 +3,7 @@ title = "Fallstudie 1"
 image = "images/full/1.png"
 thumb = "images/thumbs/1.png"
 alt = "Fallstudie '1' - 'Unterwäsche'"
-description = "Vergeleich des Zeitpunktes des letzten Kaufs von Unterwäsche von Männern und Frauen"
+description = "Vergleich des Zeitpunktes des letzten Kaufs von Unterwäsche von Männern und Frauen"
 url = "Fallstudie_UWaesche/Unterwaesche.html"
 zipurl ="Fallstudie_UWaesche/Unterwaesche.zip"
 
@@ -11,8 +11,8 @@ zipurl ="Fallstudie_UWaesche/Unterwaesche.zip"
 title = "Fallstudie 2"
 image = "images/full/2.png"
 thumb = "images/thumbs/2.png"
-alt = "Fallstudie '2' - Modellierung Preis-Absatz Funktion"
-description = "Lineare und linearisierte Regression zur Schätzung der Preis-Absatz Funktion."
+alt = "Fallstudie '2' - Modellierung Preis-Absatz-Funktion"
+description = "Lineare und linearisierte Regression zur Schätzung der Preis-Absatz-Funktion"
 url = "Fallstudie_PreisAbsatz/PreisAbsatz.html"
 #zipurl = "Fallstudie_PreisAbsatz/PreisAbsatz.zip"
 
@@ -21,7 +21,7 @@ title = "Fallstudie 3"
 image = "images/full/3.png"
 thumb = "images/thumbs/3.png"
 alt = "Fallstudie '3' - Garagenflohmarkt und Ungleichheit"
-description = "(Einfache) Marktsimulation zur Entstehung von Ungleichheit."
+description = "(Einfache) Marktsimulation zur Entstehung von Ungleichheit"
 url = "Fallstudie_FollowMoney/Followthemoney.html"
 #zipurl = "Fallstudie_FollowMoney/Followthemoney.zip"
 
@@ -30,7 +30,7 @@ title = "Fallstudie 4"
 image = "images/full/4.png"
 thumb = "images/thumbs/4.png"
 alt = "Fallstudie '4' - Zusammenhang zwischen Alter, Geschlecht und Beziehungsstatus"
-description = "Logistische Regresion zur Modellierung, ob eine Person in einer festen Partnerschaft lebt."
+description = "Logistische Regresion zur Modellierung, ob eine Person in einer festen Partnerschaft lebt"
 url = "Fallstudie_Partnerschaft/Festepartnerschaft.html"
 #zipurl = "Fallstudie_Partnerschaft/Festepartnerschaft.zip"
 
@@ -39,16 +39,65 @@ title = "Fallstudie 5"
 image = "images/full/5.png"
 thumb = "images/thumbs/5.png"
 alt = "Fallstudie '5' - Bildanalyse"
-description = "Komplexitätsreduktion durch Clusteranalyse und Hauptkomponentenanalyse am Beispiel von Bildern."
+description = "Komplexitätsreduktion durch Clusteranalyse und Hauptkomponentenanalyse am Beispiel von Bildern"
 url = "Fallstudie_Bildanalyse/Bildanalyse.html"
 #zipurl = "Fallstudie_Bildanalyse/Bildanalyse.zip"
 
 [[items]]
 title = "Fallstudie 6"
 image = "images/full/6.png"
-thumb = "images/thumbs/5.png"
+thumb = "images/thumbs/6.png"
 alt = "Fallstudie '6' - Wortassoziation"
-description = "Vergleich von Wortassoziationen."
+description = "Vergleich von Wortassoziationen"
 url = "Fallstudie_Risiko/Risiko.html"
 #zipurl = "Fallstudie_Risiko/Risiko.zip"
+
+[[items]]
+title = "Fallstudie 7"
+image = "images/full/7.png"
+thumb = "images/thumbs/7.png"
+alt = "Fallstudie '7' - Entwicklung Plastikproduktion"
+description = "Modellierung zeitliche Entwicklung Plastikproduktion"
+url = "Fallstudie_Plastik/Plastik.html"
+#zipurl = "Fallstudie_Plastik/Plastik.zip"
+
+[[items]]
+title = "Fallstudie 8"
+image = "images/full/8.png"
+thumb = "images/thumbs/8.png"
+alt = "Fallstudie '8' - Klausurpunkte"
+description = "Regression zur Mitte am Beispiel Klausurpunkte"
+url = "Fallstudie_Klausur/RegressionMitte.html"
+#zipurl = "Fallstudie_Plastik/Plastik.zip"
+
+
+[[items]]
+title = "Fallstudie 9"
+image = "images/full/Quant-Berufe-WiPsy.png"
+thumb = "images/thumbs/Quant-Berufe-WiPsy.png"
+alt = "Fallstudie '9' - Quantitative Tätigkeiten der Wirtschaftspsychologie"
+description = "Auswahl an quantitativen Fragestellungen der Wirtschaftspsychologie"
+url = "Fallstudie_Wipsy-Business/Fallstudien-WiPsy-Business.html"
+#zipurl = "Fallstudie_Wipsy-Business/Fallstudien-WiPsy-Business.zip"
+
+
+[[items]]
+title = "Fallstudie 10"
+image = "images/full/10.png"
+thumb = "images/thumbs/10.png"
+alt = "Fallstudie '10' - Prädiktoren der Lebenserwartung"
+description = "Unterscheidet sich die Lebenserwartung in den Kontinenten?"
+url = "Fallstudie_Lebenserwartung/Fallstudie-Lebenserwartung.html"
+#zipurl = "Fallstudie_Lebenserwartung/Fallstudie-Lebenserwartung.zip"
+
+
+[[items]]
+title = "Fallstudie 11"
+image = "images/full/NYC Flights.png"
+thumb = "images/thumbs/NYC Flights.png"
+alt = "Fallstudie '11' - Verspätungen der New Yorker Flüge"
+description = "Was sind die Prädiktoren der Verspätungen der New Yorker Flüge?"
+url = "Fallstudie_NYCFlights/Fallstudie-nyc-flights.html"
+#zipurl = "Fallstudie_Lebenserwartung/Fallstudie-Lebenserwartung.zip"
+
 

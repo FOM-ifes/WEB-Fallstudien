@@ -1,0 +1,134 @@
+---
+title: "Modellierung zeitliche Entwicklung Plastiproduktion"
+author: "Karsten Lübke"
+date: "14.07.2019"
+output:
+  html_document:
+    df_print: paged
+  documentclass: article
+  classoption: a4paper
+  pdf_document:
+    fig_height: 3
+    fig_width: 5
+editor_options:
+  chunk_output_type: console
+keywords: Zeitreihenanalyse, Polynomiale Regression
+bibliography: fallstudien.bib
+biblio-style: apa
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# 1. Fragestellung
+
+Der weltweite Plastikverbrauch wird zunehmend ein Problem [@geyer2017], so dass auch die Politik handelt, siehe z.B. die [Europäische Kommission - Pressemitteilung vom 21. Mai 2019](http://europa.eu/rapid/press-release_IP-19-2631_de.htm).
+
+Wie kann diese Zeitreihe modelliert werden?
+
+
+# 2. Datenbeschaffung
+
+Die Internetseite [Our World in Data](https://ourworldindata.org/) bietet dazu einen Artikel an [@ritchie2019]. Die Zeitreihe der *Annual global polymer resin and fiber production (plastic production), measured in metric tonnes per year* der Jahre 1950 bis 2015 lässt sich von der Seite [https://ourworldindata.org/plastic-pollution#global-plastic-production](https://ourworldindata.org/plastic-pollution#global-plastic-production) als `csv` Datei herunterladen -- und in R einlesen.
+
+```{r}
+Plastic <- read.csv("global-plastics-production.csv")
+```
+
+Zur Vereinfachung wird die Variable `Global.plastics.production..million.tonnes...tonnes.` umbenannt und nur die relevanten Variablen selektiert, und in die Einheit Millionen Tonnen umgerechnet.
+
+```{r, message=FALSE}
+# Ggfs. Paket mosaic installieren
+# install.packages(mosaic)
+
+# Paket laden
+library("mosaic")
+
+
+Plastic <- Plastic %>%
+  rename(Production = Global.plastics.production..million.tonnes...tonnes.) %>%
+  mutate(Production = Production / 1e06) %>%
+  select(Year, Production)
+```
+
+Eine erste Übersicht liefert ein Liniendiagramm:
+
+```{r}
+gf_line(Production ~ Year, data = Plastic)
+```
+
+Man erkennt den Einbruch in der Wirtschaftskrise 2008 sowie evtl. Auswirkungen der Ölpreiskrise Mitte und Ende der 1970er Jahre.
+
+
+# 3. Datenmodellierung
+
+Eine lineare Modellierung über die Zeit scheint nicht sinnvoll:
+
+```{r}
+gf_point(Production ~ Year, data = Plastic) %>%
+  gf_lm(Production ~ Year, data = Plastic)
+```
+
+*Hinweis:* Ein lineares Modell ($y_t \approx\beta_0 + \beta_1 \cdot t$) würde beinhalten, dass die Änderung des Mittelwertes von $y_t$ jedes Jahr konstant ist. Diese Annahme ist z.B. bei vielen Veränderungsprozessen nicht plausibel.^[*Exkurs*: So wächst z.B. Kapital bei $2\%$ Zinsen in 10 Jahren nicht um $20(=2\cdot 10)\%$ sondern um $(1+0.02)^{10}-1=`r round(((1+0.02)^10-1)*100,2)`\%$ (Zinseszins). So bequem der *Dreisatz* ist, inhaltliche Voraussetzung ist ein Modell a'la $y=\beta \cdot x$.]
+
+Betrachte dazu die absoluten Änderungen $\delta_{y_t}=y_t-y_{t-1}$:
+
+```{r, message=FALSE, warning=FALSE}
+Plastic %>%
+  mutate(delta.Production = Production - lag(Production)) %>%
+  gf_point(delta.Production ~ Year) %>%
+  gf_smooth()
+```
+
+Aber auch die relativen Änderungen $\delta_{y_t}=\frac{y_t-y_{t-1}}{y_{t-1}}$ sind nicht konstant über die Zeit:^[Sollte dies der Fall sein würde gelten $y_t \approx \beta_0 \cdot \beta_1^t$ und man würde logarithmieren.]
+
+```{r, message=FALSE, warning=FALSE}
+Plastic %>%
+  mutate(delta.Production.rel = (Production - lag(Production)) / lag(Production)) %>%
+  gf_point(delta.Production.rel ~ Year) %>%
+  gf_smooth()
+```
+
+Aufgrund der konvexen Form kann z.B. eine quadratische Funktion, d.h. $y_t \approx \beta_0 + \beta_1 \cdot t + \beta_2 \cdot t^2$ angepasst werden:
+
+```{r}
+Plastic.model <- lm(Production ~ I(Year^2) + Year, data = Plastic) 
+plotModel(Plastic.model)
+summary(Plastic.model)
+```
+
+Das Modell lautet also
+
+$$\widehat{Production}_{Year}=`r coef(Plastic.model)[1]` + (`r coef(Plastic.model)[2]`)\cdot Year^2 + (`r coef(Plastic.model)[3]`)\cdot Year + e_{Year}$$
+
+Auch wenn die Modellanpassung mit einem $R^2=`r round(rsquared(Plastic.model),4)`$ sehr gut ist, so ist zu beachten, dass insbesondere Polynomiale Modelle zur Überanpassung neigen und nicht unmittelbar zur Extrapolation geeignet sind. Auch sind in der Regel die Residuen (auto)korreliert, und somit nicht unabhängig (eine der Annahmen innerhalb der Inferenz):
+
+```{r}
+gf_point(resid(Plastic.model) ~ Year, data = Plastic) %>%
+  gf_hline(yintercept=0)
+```
+
+Eine kurzfristige Vorhersage für die Jahre 2016-2020 ergibt folgende Werte (in Millionen Tonnen):
+
+```{r}
+Zeitraum <- data.frame(Year = c(2016, 2017, 2018, 2019, 2020))
+
+predict(Plastic.model, newdata = Zeitraum, interval = "prediction")
+```
+
+## Ausblick 
+
+Es gibt unzählige Methoden die Besonderheiten einer solchen Zeitreihe explizit zu modellieren, siehe z.B. das Buch Hyndman, R.J., & Athanasopoulos, G. (2018) Forecasting: principles and practice, 2nd edition, OTexts: Melbourne, Australia. [OTexts.com/fpp2](https://otexts.com/fpp2/).
+
+# Anhang: Versionshinweise
+
+- Datum erstellt: `r Sys.Date()`
+- R Version: `r getRversion()`
+
+Verwendete Pakte:
+
+- `mosaic` Version: `r packageVersion("mosaic")`
+- `ggformula` Version: `r packageVersion("ggformula")`
+

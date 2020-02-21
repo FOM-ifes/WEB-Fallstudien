@@ -1,0 +1,1350 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={NYC Flights},
+            pdfauthor={Sebastian Sauer},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{NYC Flights}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Sebastian Sauer}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{2019-08-01}
+
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\hypertarget{fallstudie-nyc-flights}{%
+\section{Fallstudie NYC Flights}\label{fallstudie-nyc-flights}}
+
+Aufgabe: Vorhersage von Verspätungen der Flüge von den Flughäfen von New
+York City im Jahr 2013.
+
+\hypertarget{vorbereitung}{%
+\subsection{Vorbereitung}\label{vorbereitung}}
+
+Pakete laden:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(mosaic)}
+\KeywordTok{library}\NormalTok{(tidyverse)}
+\KeywordTok{library}\NormalTok{(lubridate)}
+\KeywordTok{library}\NormalTok{(corrr)}
+\KeywordTok{library}\NormalTok{(caret)}
+\KeywordTok{library}\NormalTok{(doMC)}
+\KeywordTok{library}\NormalTok{(ranger)}
+\KeywordTok{library}\NormalTok{(sjmisc)}
+\end{Highlighting}
+\end{Shaded}
+
+Daten laden:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(nycflights13)}
+\KeywordTok{data}\NormalTok{(flights)}
+\KeywordTok{glimpse}\NormalTok{(flights)}
+\CommentTok{#> Observations: 336,776}
+\CommentTok{#> Variables: 19}
+\CommentTok{#> $ year           <int> 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013,...}
+\CommentTok{#> $ month          <int> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,...}
+\CommentTok{#> $ day            <int> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,...}
+\CommentTok{#> $ dep_time       <int> 517, 533, 542, 544, 554, 554, 555, 557, 557, 55...}
+\CommentTok{#> $ sched_dep_time <int> 515, 529, 540, 545, 600, 558, 600, 600, 600, 60...}
+\CommentTok{#> $ dep_delay      <dbl> 2, 4, 2, -1, -6, -4, -5, -3, -3, -2, -2, -2, -2...}
+\CommentTok{#> $ arr_time       <int> 830, 850, 923, 1004, 812, 740, 913, 709, 838, 7...}
+\CommentTok{#> $ sched_arr_time <int> 819, 830, 850, 1022, 837, 728, 854, 723, 846, 7...}
+\CommentTok{#> $ arr_delay      <dbl> 11, 20, 33, -18, -25, 12, 19, -14, -8, 8, -2, -...}
+\CommentTok{#> $ carrier        <chr> "UA", "UA", "AA", "B6", "DL", "UA", "B6", "EV",...}
+\CommentTok{#> $ flight         <int> 1545, 1714, 1141, 725, 461, 1696, 507, 5708, 79...}
+\CommentTok{#> $ tailnum        <chr> "N14228", "N24211", "N619AA", "N804JB", "N668DN...}
+\CommentTok{#> $ origin         <chr> "EWR", "LGA", "JFK", "JFK", "LGA", "EWR", "EWR"...}
+\CommentTok{#> $ dest           <chr> "IAH", "IAH", "MIA", "BQN", "ATL", "ORD", "FLL"...}
+\CommentTok{#> $ air_time       <dbl> 227, 227, 160, 183, 116, 150, 158, 53, 140, 138...}
+\CommentTok{#> $ distance       <dbl> 1400, 1416, 1089, 1576, 762, 719, 1065, 229, 94...}
+\CommentTok{#> $ hour           <dbl> 5, 5, 5, 5, 6, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 5,...}
+\CommentTok{#> $ minute         <dbl> 15, 29, 40, 45, 0, 58, 0, 0, 0, 0, 0, 0, 0, 0, ...}
+\CommentTok{#> $ time_hour      <dttm> 2013-01-01 05:00:00, 2013-01-01 05:00:00, 2013...}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{explorative-datenanalyse}{%
+\subsection{Explorative Datenanalyse}\label{explorative-datenanalyse}}
+
+\hypertarget{wie-ist-die-verspatung-verteilt}{%
+\subsubsection{Wie ist die Verspätung
+verteilt?}\label{wie-ist-die-verspatung-verteilt}}
+
+Es gibt zwei Variablen, die Verspätung anzeigen: \texttt{arr\_delay}
+(Ankunft) und \texttt{dep\_delay}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{favstats}\NormalTok{(arr_delay }\OperatorTok{~}\StringTok{ }\DecValTok{1}\NormalTok{, }\DataTypeTok{data =}\NormalTok{ flights)}
+\CommentTok{#>   1 min  Q1 median Q3  max     mean       sd      n missing}
+\CommentTok{#> 1 1 -86 -17     -5 14 1272 6.895377 44.63329 327346    9430}
+\KeywordTok{favstats}\NormalTok{(dep_delay }\OperatorTok{~}\StringTok{ }\DecValTok{1}\NormalTok{, }\DataTypeTok{data =}\NormalTok{ flights)}
+\CommentTok{#>   1 min Q1 median Q3  max     mean       sd      n missing}
+\CommentTok{#> 1 1 -43 -5     -2 11 1301 12.63907 40.21006 328521    8255}
+\end{Highlighting}
+\end{Shaded}
+
+Nehmen wir \texttt{arr\_delay}, da die Streuung in dieser Variable höher
+ist.
+
+\hypertarget{vertiefung}{%
+\subsubsection{VERTIEFUNG}\label{vertiefung}}
+
+Möchte man einen Befehl auf mehrere Spalten anwenden, so kann man dafür
+den Befehl \texttt{map()} verwendet. \texttt{map()} führt ein Befehl auf
+jede Spalte eines Dataframes aus. Damit man da Ergebnis in Form eines
+Dataframes (Tabelle) bekommt, fügt man \texttt{\_df} an \texttt{map()}
+an:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(arr_delay, dep_delay) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{map_df}\NormalTok{(favstats)}
+\CommentTok{#>   min  Q1 median Q3  max      mean       sd      n missing}
+\CommentTok{#> 1 -86 -17     -5 14 1272  6.895377 44.63329 327346    9430}
+\CommentTok{#> 2 -43  -5     -2 11 1301 12.639070 40.21006 328521    8255}
+\end{Highlighting}
+\end{Shaded}
+
+Für den IQR:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(arr_delay, dep_delay) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{drop_na}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{map_df}\NormalTok{(iqr)}
+\CommentTok{#> # A tibble: 1 x 2}
+\CommentTok{#>   arr_delay dep_delay}
+\CommentTok{#>       <dbl>     <dbl>}
+\CommentTok{#> 1        31        16}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{visualisierung-der-verteilung}{%
+\subsubsection{Visualisierung der
+Verteilung}\label{visualisierung-der-verteilung}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{gf_histogram}\NormalTok{( }\OperatorTok{~}\StringTok{ }\NormalTok{arr_delay, }\DataTypeTok{data =}\NormalTok{ flights)}
+\KeywordTok{gf_violin}\NormalTok{(arr_delay }\OperatorTok{~}\StringTok{ }\DecValTok{1}\NormalTok{, }\DataTypeTok{data =}\NormalTok{ flights)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics[width=0.7\linewidth]{Fallstudie-nyc-flights_files/figure-latex/unnamed-chunk-7-1} \includegraphics[width=0.7\linewidth]{Fallstudie-nyc-flights_files/figure-latex/unnamed-chunk-7-2} \end{center}
+
+Aufgrund des langen rechten Randbereichs (hohe Verspätungswerte) ist das
+Diagramm nicht sher hilfreich.
+
+Begrenzen wir uns besser auf den ``inneren'' Teil der Flüge (was die
+Verspätung betrifft).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(arr_delay }\OperatorTok{<}\StringTok{ }\DecValTok{120}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{gf_violin}\NormalTok{(arr_delay }\OperatorTok{~}\StringTok{ }\DecValTok{1}\NormalTok{, }\DataTypeTok{data =}\NormalTok{ .)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics[width=0.7\linewidth]{Fallstudie-nyc-flights_files/figure-latex/unnamed-chunk-8-1} \end{center}
+
+\hypertarget{saisonale-effekte}{%
+\subsubsection{Saisonale Effekte}\label{saisonale-effekte}}
+
+Es gibt sehr viele potenzielle Ursachen für die Verspätung eines
+Flugzeugs bzw. eines Flugs. Zu einigen Kandidaten liegen uns Daten vor.
+Eine naheliegende (obwohl nicht tiefer theoretisch fundierte) Annahme
+ist, dass es saisonale Einflüsse auf die Verspätung gibt. So könnte
+Schnee im Winter oder Weihnachtsstress zum Jahreswechsel für Verspätung
+sorgen. Am Wochenende sind die Menschen entspannter und es wird weniger
+gereist. Daher könnte es Samstags und Sonntags zu weniger Verspätung
+kommen.
+
+\hypertarget{nach-jahreszeiten}{%
+\paragraph{Nach Jahreszeiten}\label{nach-jahreszeiten}}
+
+Berechnen wir die Jahreszeiten:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights2 <-}\StringTok{ }\NormalTok{flights }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{season =} \KeywordTok{case_when}\NormalTok{(}
+\NormalTok{    month }\OperatorTok{%in%}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{11}\NormalTok{, }\DecValTok{12}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{) }\OperatorTok{~}\StringTok{ "winter"}\NormalTok{,}
+\NormalTok{    month }\OperatorTok{%in%}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{6}\NormalTok{,}\DecValTok{7}\NormalTok{,}\DecValTok{9}\NormalTok{) }\OperatorTok{~}\StringTok{ "summer"}\NormalTok{,}
+\NormalTok{    month }\OperatorTok{%in%}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{5}\NormalTok{) }\OperatorTok{~}\StringTok{ "spring"}\NormalTok{,}
+    \OtherTok{TRUE} \OperatorTok{~}\StringTok{ "autumn"}
+\NormalTok{  ))}
+\end{Highlighting}
+\end{Shaded}
+
+Verspätungen nach Jahreszeiten:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{favstats}\NormalTok{(arr_delay }\OperatorTok{~}\StringTok{ }\NormalTok{season, }\DataTypeTok{data =}\NormalTok{ flights2)}
+\CommentTok{#>   season min  Q1 median Q3  max     mean       sd      n missing}
+\CommentTok{#> 1 autumn -68 -18     -6 10  688 2.944260 38.08791  57374     842}
+\CommentTok{#> 2 spring -86 -17     -5 15  931 7.310027 46.03570  55692    1434}
+\CommentTok{#> 3 summer -68 -18     -6 16 1127 9.838901 52.59895  82378    2864}
+\CommentTok{#> 4 winter -70 -15     -3 14 1272 6.600590 40.96247 131902    4290}
+\end{Highlighting}
+\end{Shaded}
+
+Im Sommer ist die Verspätung am höchsten. Vielleicht ist es besser,
+gleich auf Monate hin zu untersuchen:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{favstats}\NormalTok{(arr_delay }\OperatorTok{~}\StringTok{ }\NormalTok{month, }\DataTypeTok{data =}\NormalTok{ flights2)}
+\CommentTok{#>    month min  Q1 median Q3  max       mean       sd     n missing}
+\CommentTok{#> 1      1 -70 -15     -3 13 1272  6.1299720 40.42390 26398     606}
+\CommentTok{#> 2      2 -70 -15     -3 13  834  5.6130194 39.52862 23611    1340}
+\CommentTok{#> 3      3 -68 -18     -6 13  915  5.8075765 44.11919 27902     932}
+\CommentTok{#> 4      4 -68 -15     -2 19  931 11.1760630 47.49115 27564     766}
+\CommentTok{#> 5      5 -86 -20     -8 11  875  3.5215088 44.23761 28128     668}
+\CommentTok{#> 6      6 -64 -15     -2 26 1127 16.4813296 56.13087 27075    1168}
+\CommentTok{#> 7      7 -66 -16     -2 27  989 16.7113067 57.11709 28293    1132}
+\CommentTok{#> 8      8 -68 -18     -5 14  490  6.0406524 42.59514 28756     571}
+\CommentTok{#> 9      9 -68 -23    -12  1 1007 -4.0183636 39.71031 27010     564}
+\CommentTok{#> 10    10 -61 -18     -7  7  688 -0.1670627 32.64986 28618     271}
+\CommentTok{#> 11    11 -67 -16     -6  8  796  0.4613474 31.38741 26971     297}
+\CommentTok{#> 12    12 -68 -11      2 25  878 14.8703553 46.13311 27020    1115}
+\end{Highlighting}
+\end{Shaded}
+
+Tatsächlich ist die Verspätung im Mittelwert am höchsten im Juni und
+Juli. Dabei ist zu beachten, dass die \emph{mediane} Verspätung nur im
+Dezember positiv ist: Nur im Dezember haben die Flüge in New York im
+Median eine Verspätung.
+
+\hypertarget{weihnachten}{%
+\paragraph{Weihnachten}\label{weihnachten}}
+
+Liegt es an Weihnachten? Schauen wir uns die Tage im Dezember (und
+Januar?) genauer an. Dazu berechnen wir zuerst einen Spalte, die den Tag
+(und die Woche) berechnet.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights3 <-}\StringTok{ }\NormalTok{flights2 }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{dayinyear =} \KeywordTok{yday}\NormalTok{(time_hour),}
+         \DataTypeTok{day_id =} \DecValTok{365}\OperatorTok{-}\NormalTok{(}\DecValTok{365}\OperatorTok{-}\NormalTok{dayinyear),}
+         \DataTypeTok{week =} \KeywordTok{week}\NormalTok{(time_hour))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights3 }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{( (time_hour }\OperatorTok{>}\StringTok{ "2013-11-30 23:59:59"}\NormalTok{) ) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(dayinyear) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{arr_delay =} \KeywordTok{median}\NormalTok{(arr_delay, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{gf_line}\NormalTok{(arr_delay }\OperatorTok{~}\StringTok{ }\NormalTok{dayinyear, }\DataTypeTok{data =}\NormalTok{ .)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics[width=0.7\linewidth]{Fallstudie-nyc-flights_files/figure-latex/unnamed-chunk-13-1} \end{center}
+
+Etwa zwei Wochen vor Jahresende, also noch deutlich vor den Feiertagen,
+kommt es zu den Verspätungsspitzen. Ob zu dieser Zeit die meisten
+Menschen in den Weihnachtsurlaub fliegen? Insgesamt lässt diese
+Betrachtung offenbar keine starken Schlüsse zu.
+
+\hypertarget{wochenende-vs.-werktage}{%
+\paragraph{Wochenende vs.~Werktage}\label{wochenende-vs.-werktage}}
+
+Vielleicht sind die Wochentage die entspannten Tage ohne Verspätung?
+Schauen wir nach. Man beachte, dass die Woche in Amerika mit Sonntag (1)
+beginnt, demzufolge ist der Samstag der 7. Tag.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights3 }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{weekend =} \KeywordTok{if_else}\NormalTok{(}\KeywordTok{wday}\NormalTok{(time_hour) }\OperatorTok{%in%}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{7}\NormalTok{), }\OtherTok{TRUE}\NormalTok{, }\OtherTok{FALSE}\NormalTok{)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(weekend) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{arr_delay_md =} \KeywordTok{median}\NormalTok{(arr_delay, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{))}
+\CommentTok{#> # A tibble: 2 x 2}
+\CommentTok{#>   weekend arr_delay_md}
+\CommentTok{#>   <lgl>          <dbl>}
+\CommentTok{#> 1 FALSE             -4}
+\CommentTok{#> 2 TRUE              -8}
+\end{Highlighting}
+\end{Shaded}
+
+Aha, das sind 4 Minuten weniger im Median am Wochenende (im Vergleich zu
+werktags). Im Verhältnis zur Streuung von 31 Minuten (IQR) ist das nicht
+Nichts, aber auch nicht die Welt.
+
+\hypertarget{verspatung-pro-tag}{%
+\paragraph{Verspätung pro Tag}\label{verspatung-pro-tag}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights4 <-}\StringTok{ }\NormalTok{flights3 }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{day_rounded =} \KeywordTok{round_date}\NormalTok{(time_hour, }\StringTok{"day"}\NormalTok{))}
+
+\NormalTok{flights4 }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(day_rounded) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{arr_delay_md =} \KeywordTok{median}\NormalTok{(arr_delay, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{gf_line}\NormalTok{(arr_delay_md }\OperatorTok{~}\StringTok{ }\NormalTok{day_rounded, }\DataTypeTok{data =}\NormalTok{ .) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{gf_smooth}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics[width=0.7\linewidth]{Fallstudie-nyc-flights_files/figure-latex/unnamed-chunk-15-1} \end{center}
+
+Die Spitzen sind so nicht direkt erschließbar. Betrachten wir
+abschließend die Verspätungen pro Woche.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights4 }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{week_rounded =} \KeywordTok{round_date}\NormalTok{(time_hour, }\StringTok{"week"}\NormalTok{)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(week_rounded) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{arr_delay_md =} \KeywordTok{median}\NormalTok{(arr_delay, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{gf_line}\NormalTok{(arr_delay_md }\OperatorTok{~}\StringTok{ }\NormalTok{week_rounded, }\DataTypeTok{data =}\NormalTok{ .) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{gf_smooth}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics[width=0.7\linewidth]{Fallstudie-nyc-flights_files/figure-latex/unnamed-chunk-16-1} \end{center}
+
+Der Zacken im Juli könnte mit dem Nationalfeierag in den USA
+zusammenhängen. Lassen wir diese Untersuchungen an dieser Stelle.
+
+\hypertarget{wetter}{%
+\subsubsection{Wetter}\label{wetter}}
+
+Die Wetterdaten sind in einer anderen Tabelle (\texttt{weather}), auch
+im Paket \texttt{nycflights13} gespeichert. Über Datum/Zeit können wir
+die Wetterdaten mit den Flugdaten zusammenführen. Dabei begnügen wir uns
+mit einer tagesgenauen Präzision, da die Wetterdaten nicht jede Stunde
+(Minute, Sekunde) abdecken.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{data}\NormalTok{(weather)}
+\KeywordTok{glimpse}\NormalTok{(weather)}
+\CommentTok{#> Observations: 26,115}
+\CommentTok{#> Variables: 15}
+\CommentTok{#> $ origin     <chr> "EWR", "EWR", "EWR", "EWR", "EWR", "EWR", "EWR", "E...}
+\CommentTok{#> $ year       <dbl> 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 201...}
+\CommentTok{#> $ month      <dbl> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...}
+\CommentTok{#> $ day        <int> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...}
+\CommentTok{#> $ hour       <int> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, ...}
+\CommentTok{#> $ temp       <dbl> 39.02, 39.02, 39.02, 39.92, 39.02, 37.94, 39.02, 39...}
+\CommentTok{#> $ dewp       <dbl> 26.06, 26.96, 28.04, 28.04, 28.04, 28.04, 28.04, 28...}
+\CommentTok{#> $ humid      <dbl> 59.37, 61.63, 64.43, 62.21, 64.43, 67.21, 64.43, 62...}
+\CommentTok{#> $ wind_dir   <dbl> 270, 250, 240, 250, 260, 240, 240, 250, 260, 260, 2...}
+\CommentTok{#> $ wind_speed <dbl> 10.35702, 8.05546, 11.50780, 12.65858, 12.65858, 11...}
+\CommentTok{#> $ wind_gust  <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,...}
+\CommentTok{#> $ precip     <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...}
+\CommentTok{#> $ pressure   <dbl> 1012.0, 1012.3, 1012.5, 1012.2, 1011.9, 1012.4, 101...}
+\CommentTok{#> $ visib      <dbl> 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,...}
+\CommentTok{#> $ time_hour  <dttm> 2013-01-01 01:00:00, 2013-01-01 02:00:00, 2013-01-...}
+
+\NormalTok{weather2 <-}\StringTok{ }\NormalTok{weather }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{date_time =} \KeywordTok{round_date}\NormalTok{(time_hour, }\StringTok{"hour"}\NormalTok{),}
+         \DataTypeTok{day_rounded =} \KeywordTok{round_date}\NormalTok{(time_hour, }\StringTok{"day"}\NormalTok{)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(day_rounded) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarise_at}\NormalTok{(}\KeywordTok{vars}\NormalTok{(temp, humid, wind_speed, precip, visib), median, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights5 <-}\StringTok{ }\NormalTok{flights4 }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{inner_join}\NormalTok{(weather2, }\DataTypeTok{by =} \KeywordTok{c}\NormalTok{(}\StringTok{"day_rounded"}\NormalTok{ =}\StringTok{ "day_rounded"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+Wie ist die Korrelation der Wetterdaten mit der Verspätung?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights5 }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(temp, humid, wind_speed, precip, visib, arr_delay) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{correlate}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{focus}\NormalTok{(arr_delay)}
+\CommentTok{#> # A tibble: 5 x 2}
+\CommentTok{#>   rowname    arr_delay}
+\CommentTok{#>   <chr>          <dbl>}
+\CommentTok{#> 1 temp          0.0216}
+\CommentTok{#> 2 humid         0.150 }
+\CommentTok{#> 3 wind_speed    0.0651}
+\CommentTok{#> 4 precip        0.0465}
+\CommentTok{#> 5 visib        -0.0702}
+\end{Highlighting}
+\end{Shaded}
+
+Gut, etwas Zusammenhang mit Luftfeuchtigkeit (\texttt{humid}), aber
+ansonsten nicht viel zu sehen. Apropos sehen: Schlechte Sicht geht mit
+\emph{weniger} Verspätung einher (?).
+
+\hypertarget{modellierung}{%
+\subsection{Modellierung}\label{modellierung}}
+
+\hypertarget{datensatz-bereinigen}{%
+\subsubsection{Datensatz bereinigen}\label{datensatz-bereinigen}}
+
+\hypertarget{variablen-ohne-varianz}{%
+\paragraph{Variablen ohne Varianz}\label{variablen-ohne-varianz}}
+
+Variablen ohne Varianz sind wertlos für die Vorhersage, also entfernen
+wir sie. \texttt{caret} bietet dazu \texttt{nearZeroVar}. Natürlich kann
+man sich auch die Daten mit bloßem Auge ansehen, dann fällt auf, dass
+\texttt{year} den konstanten Wert 2013 aufweist.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights6 <-}\StringTok{ }\NormalTok{flights5 }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\NormalTok{year)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{fehlende-werte}{%
+\paragraph{Fehlende Werte}\label{fehlende-werte}}
+
+Probieren wir die rabiate Methode:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights7 <-}\StringTok{ }\NormalTok{flights6 }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{drop_na}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+Wie viel Prozent der Fälle haben wir verloren?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{nrow}\NormalTok{(flights7)}\OperatorTok{/}\KeywordTok{nrow}\NormalTok{(flights6)}
+\CommentTok{#> [1] 0.9719892}
+\end{Highlighting}
+\end{Shaded}
+
+Etwa 3\%, das verschmerzen wir.
+
+\hypertarget{z-skalieren}{%
+\paragraph{Z-Skalieren}\label{z-skalieren}}
+
+Für viele Algorithmen ist es nötig (z.B. neuronale Netze), die
+Prädiktoren vorab zu standardisieren hinsichtlich Mittelwert und
+Streuung (z-Transformation). Das kann man z.B. so erreichen (via Paket
+\texttt{sjmisc}):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights7a <-}\StringTok{ }\KeywordTok{std}\NormalTok{(flights7, }\DataTypeTok{suffix =} \StringTok{""}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{kreuzvalidierungsmethode}{%
+\subsubsection{Kreuzvalidierungsmethode}\label{kreuzvalidierungsmethode}}
+
+Um Überanpassung zu vermeiden, verwenden wir eine
+5-fach-Kreuzvalidierung.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{my_crossval <-}\StringTok{ }\KeywordTok{trainControl}\NormalTok{(}\DataTypeTok{method =} \StringTok{"cv"}\NormalTok{,}
+                            \DataTypeTok{number =} \DecValTok{5}\NormalTok{,}
+                            \DataTypeTok{allowParallel =} \OtherTok{TRUE}\NormalTok{,}
+                            \DataTypeTok{verboseIter =} \OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\texttt{allowParallel} erlaubt die Verwendung mehrerer Rechenkerne,
+sofern initialisiert:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{doMC}\OperatorTok{::}\KeywordTok{registerDoMC}\NormalTok{(}\DataTypeTok{cores =} \DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Achtung: Verdoppeln wir die Anzahl der Kerne, verdoppeln wir damit auch
+die Menge des benötigten Speichers.
+
+\hypertarget{datensatz-reduzieren}{%
+\subsubsection{Datensatz reduzieren}\label{datensatz-reduzieren}}
+
+Große Datensätze bringen einen Rechner leicht aus der Ruhe. Besonders
+kategoriale Variablen mit vielen Stufen sind schwierig, da sie (manuell
+oder je nach Funktion automatisch) in Dummy-Variablen umgewandelt werden
+müssen.
+
+Begrenzen wir uns daher auf metrische Variablen.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights8 <-}\StringTok{ }\NormalTok{flights7a }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select_if}\NormalTok{(is.numeric)}
+\end{Highlighting}
+\end{Shaded}
+
+Außerdem dürfen wir nicht vergessen, die andere Verspätungsvariable zu
+entferne (\texttt{dep\_delay}).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights9 <-}\StringTok{ }\NormalTok{flights8 }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\NormalTok{dep_delay)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{redundante-variablen}{%
+\subsubsection{Redundante Variablen}\label{redundante-variablen}}
+
+Haben wir noch redundante Variablen?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{findLinearCombos}\NormalTok{(flights9)}
+\CommentTok{#> $linearCombos}
+\CommentTok{#> $linearCombos[[1]]}
+\CommentTok{#> [1] 12  4 11}
+\CommentTok{#> }
+\CommentTok{#> $linearCombos[[2]]}
+\CommentTok{#> [1] 14 13}
+\CommentTok{#> }
+\CommentTok{#> }
+\CommentTok{#> $remove}
+\CommentTok{#> [1] 12 14}
+\end{Highlighting}
+\end{Shaded}
+
+Ja!
+
+Entfernen wir sie:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights9a <-}\StringTok{ }\NormalTok{flights9 }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\KeywordTok{c}\NormalTok{(}\DecValTok{12}\NormalTok{,}\DecValTok{14}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{datensatz-aufteilen}{%
+\subsubsection{Datensatz aufteilen}\label{datensatz-aufteilen}}
+
+Teilen wir den Datensatz zu 80\% in einen Übungsteil bzw. zu 20\% in
+einen Testdatensatz auf.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n_uebung <-}\StringTok{ }\KeywordTok{round}\NormalTok{(.}\DecValTok{8} \OperatorTok{*}\StringTok{ }\KeywordTok{nrow}\NormalTok{(flights9a), }\DataTypeTok{digits =} \DecValTok{0}\NormalTok{)}
+
+\NormalTok{uebung_index <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\KeywordTok{nrow}\NormalTok{(flights9a), }\DataTypeTok{size =}\NormalTok{ n_uebung)}
+
+\NormalTok{uebung_df <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(flights9a, }\KeywordTok{row_number}\NormalTok{() }\OperatorTok{%in%}\StringTok{ }\NormalTok{uebung_index)}
+\NormalTok{test_df <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(flights9a, }\OperatorTok{!}\NormalTok{(}\KeywordTok{row_number}\NormalTok{() }\OperatorTok{%in%}\StringTok{ }\NormalTok{uebung_index))}
+\end{Highlighting}
+\end{Shaded}
+
+Die Gesamtfallzahl muss der Summe aus Übungs- und Test-Datensatz
+entsprechen:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(}\KeywordTok{nrow}\NormalTok{(uebung_df) }\OperatorTok{+}\StringTok{ }\KeywordTok{nrow}\NormalTok{(test_df)) }\OperatorTok{==}\StringTok{ }\KeywordTok{nrow}\NormalTok{(flights9a)}
+\CommentTok{#> [1] TRUE}
+\end{Highlighting}
+\end{Shaded}
+
+Passt.
+
+\hypertarget{modell-1---regression}{%
+\subsubsection{Modell 1 - Regression}\label{modell-1---regression}}
+
+Beginnen wir mit einer einfachen Regression (ohne Interaktionen,
+Polynome, etc.).\footnote{vgl.
+  \url{https://topepo.github.io/caret/train-models-by-tag.html\#linear-regression}}
+
+Eine Regression hat keine Tuningparameter.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{start <-}\StringTok{ }\KeywordTok{Sys.time}\NormalTok{()}
+\NormalTok{lm_fit1 <-}\StringTok{ }\KeywordTok{train}\NormalTok{(arr_delay }\OperatorTok{~}\StringTok{ }\NormalTok{.,}
+                 \DataTypeTok{data =}\NormalTok{ uebung_df,}
+                 \DataTypeTok{method =} \StringTok{"lm"}\NormalTok{,}
+                 \DataTypeTok{trControl =}\NormalTok{ my_crossval)}
+\NormalTok{end <-}\StringTok{ }\KeywordTok{Sys.time}\NormalTok{()}
+
+\NormalTok{(time_taken_lm1 <-}\StringTok{ }\NormalTok{end }\OperatorTok{-}\StringTok{ }\NormalTok{start)}
+\CommentTok{#> Time difference of 25.82482 secs}
+
+
+\CommentTok{#saveRDS(lm_fit1, file = "lm_fit1.rds")}
+\end{Highlighting}
+\end{Shaded}
+
+Ohne die Begrenzung auf numerische Variablen hat meine Maschine (16GB
+Speicher) einen Asthmaanfall bekommen und ist
+steckengeblieben.\footnote{vgl.
+  \url{https://stackoverflow.com/questions/51248293/error-vector-memory-exhausted-limit-reached-r-3-5-0-macos?rq=1}}
+
+Das erzeugte Modell hatte in der Datei eine Größe von ca. 360MB.
+
+Die Koeffizienten des Modells lassen sich auf übliche Weise bestimmen:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(lm_fit1)}
+\CommentTok{#> }
+\CommentTok{#> Call:}
+\CommentTok{#> lm(formula = .outcome ~ ., data = dat)}
+\CommentTok{#> }
+\CommentTok{#> Residuals:}
+\CommentTok{#>     Min      1Q  Median      3Q     Max }
+\CommentTok{#> -2.1331 -0.4664 -0.1819  0.1809 29.4201 }
+\CommentTok{#> }
+\CommentTok{#> Coefficients:}
+\CommentTok{#>                  Estimate Std. Error  t value Pr(>|t|)    }
+\CommentTok{#> (Intercept)     0.0006767  0.0017679    0.383  0.70189    }
+\CommentTok{#> month           8.5536830  0.3026523   28.262  < 2e-16 ***}
+\CommentTok{#> day             0.7325911  0.0255662   28.655  < 2e-16 ***}
+\CommentTok{#> dep_time        0.7870591  0.0061406  128.173  < 2e-16 ***}
+\CommentTok{#> sched_dep_time -0.5949524  0.0435803  -13.652  < 2e-16 ***}
+\CommentTok{#> arr_time       -0.2712591  0.0029136  -93.102  < 2e-16 ***}
+\CommentTok{#> sched_arr_time  0.0960639  0.0036036   26.657  < 2e-16 ***}
+\CommentTok{#> flight          0.0371456  0.0020263   18.332  < 2e-16 ***}
+\CommentTok{#> air_time        1.6411560  0.0141639  115.869  < 2e-16 ***}
+\CommentTok{#> distance       -1.6623510  0.0142112 -116.975  < 2e-16 ***}
+\CommentTok{#> hour            0.1226310  0.0430038    2.852  0.00435 ** }
+\CommentTok{#> dayinyear      -8.9888118  0.3186638  -28.208  < 2e-16 ***}
+\CommentTok{#> week            0.3882411  0.0910250    4.265    2e-05 ***}
+\CommentTok{#> temp            0.0742258  0.0023826   31.154  < 2e-16 ***}
+\CommentTok{#> humid           0.1524809  0.0022081   69.055  < 2e-16 ***}
+\CommentTok{#> wind_speed      0.0971761  0.0019647   49.461  < 2e-16 ***}
+\CommentTok{#> precip         -0.0012373  0.0019184   -0.645  0.51894    }
+\CommentTok{#> visib           0.0063319  0.0022010    2.877  0.00402 ** }
+\CommentTok{#> ---}
+\CommentTok{#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1}
+\CommentTok{#> }
+\CommentTok{#> Residual standard error: 0.9041 on 261512 degrees of freedom}
+\CommentTok{#> Multiple R-squared:  0.1867, Adjusted R-squared:  0.1867 }
+\CommentTok{#> F-statistic:  3532 on 17 and 261512 DF,  p-value: < 2.2e-16}
+\end{Highlighting}
+\end{Shaded}
+
+Die Prädiktorenrelevanz kann man über \texttt{varImp()} abfragen.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{varImp}\NormalTok{(lm_fit1)}
+\CommentTok{#> lm variable importance}
+\CommentTok{#> }
+\CommentTok{#>                Overall}
+\CommentTok{#> dep_time       100.000}
+\CommentTok{#> distance        91.219}
+\CommentTok{#> air_time        90.352}
+\CommentTok{#> arr_time        72.499}
+\CommentTok{#> humid           53.643}
+\CommentTok{#> wind_speed      38.279}
+\CommentTok{#> temp            23.923}
+\CommentTok{#> day             21.964}
+\CommentTok{#> month           21.656}
+\CommentTok{#> dayinyear       21.613}
+\CommentTok{#> sched_arr_time  20.397}
+\CommentTok{#> flight          13.869}
+\CommentTok{#> sched_dep_time  10.199}
+\CommentTok{#> week             2.839}
+\CommentTok{#> visib            1.750}
+\CommentTok{#> hour             1.730}
+\CommentTok{#> precip           0.000}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{modell-2---random-forest}{%
+\subsubsection{Modell 2 - Random
+Forest}\label{modell-2---random-forest}}
+
+Im Gegensatz zur Regression gibt es bei Random-Forest-Modellen
+Tuningparameter, und zwar die Anzahl der Variablen pro Baum, hier mit
+\texttt{.mtry} bezeichnet. Eine Faustregel für diesen Parameter ist
+\(\sqrt(k)\), hier also etwa oder 6.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rf_grid <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}
+  \DataTypeTok{.mtry =} \KeywordTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{5}\NormalTok{, }\DecValTok{6}\NormalTok{, }\DecValTok{7}\NormalTok{),}
+  \DataTypeTok{.splitrule =} \StringTok{"variance"}\NormalTok{,}
+  \DataTypeTok{.min.node.size =} \DecValTok{5}\NormalTok{)}
+
+\NormalTok{rf_grid}
+\CommentTok{#>   .mtry .splitrule .min.node.size}
+\CommentTok{#> 1     4   variance              5}
+\CommentTok{#> 2     5   variance              5}
+\CommentTok{#> 3     6   variance              5}
+\CommentTok{#> 4     7   variance              5}
+\end{Highlighting}
+\end{Shaded}
+
+Um Zeit zu sparen, verringern wir die Stichprobengröße auf 1000:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{uebung_df_small <-}\StringTok{ }\KeywordTok{sample_n}\NormalTok{(uebung_df, }\DataTypeTok{size =} \DecValTok{1000}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Dann berechnen wir das Modell; gibt man keine Hinweise auf Variation von
+Tuningparametern, so wählt die Funktion Standardwerte.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{start <-}\StringTok{ }\KeywordTok{Sys.time}\NormalTok{()}
+\NormalTok{rf_fit1 <-}\StringTok{ }\KeywordTok{train}\NormalTok{(arr_delay }\OperatorTok{~}\StringTok{ }\NormalTok{.,}
+                 \DataTypeTok{data =}\NormalTok{ uebung_df_small,}
+                 \DataTypeTok{method =} \StringTok{"ranger"}\NormalTok{,}
+                 \DataTypeTok{trControl =}\NormalTok{ my_crossval)}
+\NormalTok{end <-}\StringTok{ }\KeywordTok{Sys.time}\NormalTok{()}
+
+\NormalTok{(time_taken <-}\StringTok{ }\NormalTok{end }\OperatorTok{-}\StringTok{ }\NormalTok{start)}
+\CommentTok{#> Time difference of 23.08801 secs}
+
+\CommentTok{#saveRDS(rf_fit1, file = "lm_fit1.rds")}
+\CommentTok{#readRDS("lm_fit1.rds")}
+\end{Highlighting}
+\end{Shaded}
+
+Einen Überblick über das berechnete Modell kann man sich so ausgeben
+lassen:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rf_fit1}
+\CommentTok{#> Random Forest }
+\CommentTok{#> }
+\CommentTok{#> 1000 samples}
+\CommentTok{#>   17 predictor}
+\CommentTok{#> }
+\CommentTok{#> No pre-processing}
+\CommentTok{#> Resampling: Cross-Validated (5 fold) }
+\CommentTok{#> Summary of sample sizes: 800, 801, 801, 799, 799 }
+\CommentTok{#> Resampling results across tuning parameters:}
+\CommentTok{#> }
+\CommentTok{#>   mtry  splitrule   RMSE       Rsquared   MAE      }
+\CommentTok{#>    2    variance    0.8253691  0.4129177  0.5272027}
+\CommentTok{#>    2    extratrees  0.8590837  0.3932634  0.5362638}
+\CommentTok{#>    9    variance    0.6857243  0.5992653  0.4387015}
+\CommentTok{#>    9    extratrees  0.7129957  0.5855666  0.4599433}
+\CommentTok{#>   17    variance    0.6646842  0.6178340  0.4125599}
+\CommentTok{#>   17    extratrees  0.6652444  0.6377894  0.4281044}
+\CommentTok{#> }
+\CommentTok{#> Tuning parameter 'min.node.size' was held constant at a value of 5}
+\CommentTok{#> RMSE was used to select the optimal model using the smallest value.}
+\CommentTok{#> The final values used for the model were mtry = 17, splitrule =}
+\CommentTok{#>  variance and min.node.size = 5.}
+\end{Highlighting}
+\end{Shaded}
+
+Im resultierenden Objekt sind eine Vielzahl von Informationen zu finden.
+So kann man sich den Modellkandidaten mit den besten Werten ausgeben
+lassen:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rf_fit1}\OperatorTok{$}\NormalTok{bestTune}
+\CommentTok{#>   mtry splitrule min.node.size}
+\CommentTok{#> 5   17  variance             5}
+\end{Highlighting}
+\end{Shaded}
+
+Aber was ist das Kriteriem, das optimiert wird?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rf_fit1}\OperatorTok{$}\NormalTok{metric}
+\CommentTok{#> [1] "RMSE"}
+\end{Highlighting}
+\end{Shaded}
+
+Es wird nach dem \emph{Root Mean Square Error} optimiert.
+
+Weitere Infos zum Algorithmus bekommt man z.B. so:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{modelLookup}\NormalTok{(}\StringTok{"ranger"}\NormalTok{)}
+\CommentTok{#>    model     parameter                         label forReg forClass}
+\CommentTok{#> 1 ranger          mtry #Randomly Selected Predictors   TRUE     TRUE}
+\CommentTok{#> 2 ranger     splitrule                Splitting Rule   TRUE     TRUE}
+\CommentTok{#> 3 ranger min.node.size             Minimal Node Size   TRUE     TRUE}
+\CommentTok{#>   probModel}
+\CommentTok{#> 1      TRUE}
+\CommentTok{#> 2      TRUE}
+\CommentTok{#> 3      TRUE}
+\end{Highlighting}
+\end{Shaded}
+
+Wir sehen, dass das Modell drei Tuningparameter hat (wobei
+\texttt{caret} den Parameter \texttt{min.node.size} konstant hielt).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(rf_fit1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics[width=0.7\linewidth]{Fallstudie-nyc-flights_files/figure-latex/unnamed-chunk-37-1} \end{center}
+
+Möchte man eine bestimmte Anzahl an Kandidatenmodelle prüfen lassen, so
+kann man das mit \texttt{tuneLength} tun:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{start <-}\StringTok{ }\KeywordTok{Sys.time}\NormalTok{()}
+\NormalTok{rf_fit2 <-}\StringTok{ }\KeywordTok{train}\NormalTok{(arr_delay }\OperatorTok{~}\StringTok{ }\NormalTok{.,}
+                 \DataTypeTok{data =}\NormalTok{ uebung_df_small,}
+                 \DataTypeTok{method =} \StringTok{"ranger"}\NormalTok{,}
+                 \DataTypeTok{trControl =}\NormalTok{ my_crossval,}
+                 \DataTypeTok{tuneLength =} \DecValTok{4}\NormalTok{)}
+\NormalTok{end <-}\StringTok{ }\KeywordTok{Sys.time}\NormalTok{()}
+
+
+\NormalTok{(time_taken <-}\StringTok{ }\NormalTok{end }\OperatorTok{-}\StringTok{ }\NormalTok{start)}
+\CommentTok{#> Time difference of 36.44905 secs}
+
+\KeywordTok{saveRDS}\NormalTok{(rf_fit2, }\DataTypeTok{file =} \StringTok{"lm_fit2.rds"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rf_fit2}
+\CommentTok{#> Random Forest }
+\CommentTok{#> }
+\CommentTok{#> 1000 samples}
+\CommentTok{#>   17 predictor}
+\CommentTok{#> }
+\CommentTok{#> No pre-processing}
+\CommentTok{#> Resampling: Cross-Validated (5 fold) }
+\CommentTok{#> Summary of sample sizes: 799, 800, 800, 801, 800 }
+\CommentTok{#> Resampling results across tuning parameters:}
+\CommentTok{#> }
+\CommentTok{#>   mtry  splitrule   RMSE       Rsquared   MAE      }
+\CommentTok{#>    2    variance    0.8203238  0.4175518  0.5321533}
+\CommentTok{#>    2    extratrees  0.8525036  0.4032347  0.5362929}
+\CommentTok{#>    7    variance    0.7002828  0.5966789  0.4562868}
+\CommentTok{#>    7    extratrees  0.7199919  0.5847068  0.4712169}
+\CommentTok{#>   12    variance    0.6630210  0.6427126  0.4264476}
+\CommentTok{#>   12    extratrees  0.6755618  0.6339950  0.4431332}
+\CommentTok{#>   17    variance    0.6575474  0.6444369  0.4155007}
+\CommentTok{#>   17    extratrees  0.6563739  0.6510467  0.4311083}
+\CommentTok{#> }
+\CommentTok{#> Tuning parameter 'min.node.size' was held constant at a value of 5}
+\CommentTok{#> RMSE was used to select the optimal model using the smallest value.}
+\CommentTok{#> The final values used for the model were mtry = 17, splitrule =}
+\CommentTok{#>  extratrees and min.node.size = 5.}
+\end{Highlighting}
+\end{Shaded}
+
+Mit \texttt{tuneGrid} kann man die Werte der Modellkandidaten genau
+einstellen.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{start <-}\StringTok{ }\KeywordTok{Sys.time}\NormalTok{()}
+\NormalTok{rf_fit3 <-}\StringTok{ }\KeywordTok{train}\NormalTok{(arr_delay }\OperatorTok{~}\StringTok{ }\NormalTok{.,}
+                 \DataTypeTok{data =}\NormalTok{ uebung_df_small,}
+                 \DataTypeTok{method =} \StringTok{"ranger"}\NormalTok{,}
+                 \DataTypeTok{trControl =}\NormalTok{ my_crossval,}
+                 \DataTypeTok{tuneGrid =}\NormalTok{ rf_grid)}
+\NormalTok{end <-}\StringTok{ }\KeywordTok{Sys.time}\NormalTok{()}
+
+
+\NormalTok{(time_taken <-}\StringTok{ }\NormalTok{end }\OperatorTok{-}\StringTok{ }\NormalTok{start)}
+\CommentTok{#> Time difference of 8.39345 secs}
+
+\CommentTok{# saveRDS(rf_fit3, file = "lm_fit3.rds")}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rf_fit3}
+\CommentTok{#> Random Forest }
+\CommentTok{#> }
+\CommentTok{#> 1000 samples}
+\CommentTok{#>   17 predictor}
+\CommentTok{#> }
+\CommentTok{#> No pre-processing}
+\CommentTok{#> Resampling: Cross-Validated (5 fold) }
+\CommentTok{#> Summary of sample sizes: 800, 800, 801, 799, 800 }
+\CommentTok{#> Resampling results across tuning parameters:}
+\CommentTok{#> }
+\CommentTok{#>   mtry  RMSE       Rsquared   MAE      }
+\CommentTok{#>   4     0.7553441  0.5083364  0.4943232}
+\CommentTok{#>   5     0.7254933  0.5542789  0.4785002}
+\CommentTok{#>   6     0.7045373  0.5814886  0.4632984}
+\CommentTok{#>   7     0.6926108  0.6007891  0.4535480}
+\CommentTok{#> }
+\CommentTok{#> Tuning parameter 'splitrule' was held constant at a value of}
+\CommentTok{#>  variance}
+\CommentTok{#> Tuning parameter 'min.node.size' was held constant at a value}
+\CommentTok{#>  of 5}
+\CommentTok{#> RMSE was used to select the optimal model using the smallest value.}
+\CommentTok{#> The final values used for the model were mtry = 7, splitrule =}
+\CommentTok{#>  variance and min.node.size = 5.}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{modell-3---neuronales-netz}{%
+\subsubsection{Modell 3 - Neuronales
+Netz}\label{modell-3---neuronales-netz}}
+
+Neuronale Netze benötigen große Datensätze, daher ist unser kleiner
+Datensatz mit \(n=1000\) sicher zu klein (gerade in Anbetracht zur Zahl
+der Features). Aus Vergleichsbarkeitsgründen und um die Rechenkosten zu
+schätzen, bietet es sich aber an, zunächst mit einem kleinen Datensatz
+zu arbeiten:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{start <-}\StringTok{ }\KeywordTok{Sys.time}\NormalTok{()}
+\NormalTok{nn_fit1 <-}\StringTok{ }\KeywordTok{train}\NormalTok{(arr_delay }\OperatorTok{~}\StringTok{ }\NormalTok{.,}
+                 \DataTypeTok{data =}\NormalTok{ uebung_df_small,}
+                 \DataTypeTok{method =} \StringTok{"nnet"}\NormalTok{,}
+                 \DataTypeTok{trControl =}\NormalTok{ my_crossval,}
+                 \DataTypeTok{linout =} \OtherTok{TRUE}\NormalTok{)}
+\CommentTok{#> # weights:  96}
+\CommentTok{#> initial  value 1293.844765 }
+\CommentTok{#> iter  10 value 810.417182}
+\CommentTok{#> iter  20 value 599.392707}
+\CommentTok{#> iter  30 value 449.445228}
+\CommentTok{#> iter  40 value 364.643107}
+\CommentTok{#> iter  50 value 289.611282}
+\CommentTok{#> iter  60 value 238.267314}
+\CommentTok{#> iter  70 value 209.798648}
+\CommentTok{#> iter  80 value 175.217991}
+\CommentTok{#> iter  90 value 162.966931}
+\CommentTok{#> iter 100 value 152.345308}
+\CommentTok{#> final  value 152.345308 }
+\CommentTok{#> stopped after 100 iterations}
+\NormalTok{end <-}\StringTok{ }\KeywordTok{Sys.time}\NormalTok{()}
+
+
+\NormalTok{(time_taken <-}\StringTok{ }\NormalTok{end }\OperatorTok{-}\StringTok{ }\NormalTok{start)}
+\CommentTok{#> Time difference of 4.283968 secs}
+
+\KeywordTok{saveRDS}\NormalTok{(nn_fit1, }\DataTypeTok{file =} \StringTok{"nn_fit1.rds"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Der Parameter \texttt{linout\ =\ TRUE} verhindert eine
+Aktivierungsfunktion, die den Wertebereich auf {[}0,1{]} beschränken
+würde.
+
+Das ging schnell. Vergrößen wir den Datensatz:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{start <-}\StringTok{ }\KeywordTok{Sys.time}\NormalTok{()}
+\NormalTok{nn_fit2 <-}\StringTok{ }\KeywordTok{train}\NormalTok{(arr_delay }\OperatorTok{~}\StringTok{ }\NormalTok{.,}
+                 \DataTypeTok{data =}\NormalTok{ uebung_df,}
+                 \DataTypeTok{method =} \StringTok{"nnet"}\NormalTok{,}
+                 \DataTypeTok{trControl =}\NormalTok{ my_crossval,}
+                 \DataTypeTok{linout =} \OtherTok{TRUE}\NormalTok{)}
+\CommentTok{#> # weights:  96}
+\CommentTok{#> initial  value 282715.082894 }
+\CommentTok{#> iter  10 value 231584.339546}
+\CommentTok{#> iter  20 value 178470.397954}
+\CommentTok{#> iter  30 value 153481.591084}
+\CommentTok{#> iter  40 value 135576.240699}
+\CommentTok{#> iter  50 value 116695.609467}
+\CommentTok{#> iter  60 value 110859.369898}
+\CommentTok{#> iter  70 value 103110.157901}
+\CommentTok{#> iter  80 value 95147.150020}
+\CommentTok{#> iter  90 value 85477.968554}
+\CommentTok{#> iter 100 value 74358.691471}
+\CommentTok{#> final  value 74358.691471 }
+\CommentTok{#> stopped after 100 iterations}
+\NormalTok{end <-}\StringTok{ }\KeywordTok{Sys.time}\NormalTok{()}
+
+
+\NormalTok{(time_taken <-}\StringTok{ }\NormalTok{end }\OperatorTok{-}\StringTok{ }\NormalTok{start)}
+\CommentTok{#> Time difference of 13.16125 mins}
+
+\CommentTok{# saveRDS(nn_fit2, file = "nn_fit2.rds")}
+\end{Highlighting}
+\end{Shaded}
+
+Es gibt verschiedene Implementierungen von neuronalen Netzen, die in
+\texttt{caret} angesteuert werden können, z.B. \texttt{neuralnet}. Es
+verfügt über 3 Modellparameter:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{modelLookup}\NormalTok{(}\StringTok{"neuralnet"}\NormalTok{)}
+\CommentTok{#>       model parameter                    label forReg forClass probModel}
+\CommentTok{#> 1 neuralnet    layer1 #Hidden Units in Layer 1   TRUE    FALSE     FALSE}
+\CommentTok{#> 2 neuralnet    layer2 #Hidden Units in Layer 2   TRUE    FALSE     FALSE}
+\CommentTok{#> 3 neuralnet    layer3 #Hidden Units in Layer 3   TRUE    FALSE     FALSE}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{getModelInfo}\NormalTok{(}\StringTok{"neuralnet"}\NormalTok{)}
+\CommentTok{#> $neuralnet}
+\CommentTok{#> $neuralnet$label}
+\CommentTok{#> [1] "Neural Network"}
+\CommentTok{#> }
+\CommentTok{#> $neuralnet$library}
+\CommentTok{#> [1] "neuralnet"}
+\CommentTok{#> }
+\CommentTok{#> $neuralnet$loop}
+\CommentTok{#> NULL}
+\CommentTok{#> }
+\CommentTok{#> $neuralnet$type}
+\CommentTok{#> [1] "Regression"}
+\CommentTok{#> }
+\CommentTok{#> $neuralnet$parameters}
+\CommentTok{#>   parameter   class                    label}
+\CommentTok{#> 1    layer1 numeric #Hidden Units in Layer 1}
+\CommentTok{#> 2    layer2 numeric #Hidden Units in Layer 2}
+\CommentTok{#> 3    layer3 numeric #Hidden Units in Layer 3}
+\CommentTok{#> }
+\CommentTok{#> $neuralnet$grid}
+\CommentTok{#> function(x, y, len = NULL, search = "grid") \{}
+\CommentTok{#>                     if(search == "grid") \{}
+\CommentTok{#>                       out <- expand.grid(layer1 = ((1:len) * 2) - 1, layer2 = 0, layer3 = 0)}
+\CommentTok{#>                     \} else \{}
+\CommentTok{#>                       out <- data.frame(layer1 = sample(2:20, replace = TRUE, size = len),}
+\CommentTok{#>                                         layer2 = sample(c(0, 2:20), replace = TRUE, size = len),}
+\CommentTok{#>                                         layer3 = sample(c(0, 2:20), replace = TRUE, size = len))}
+\CommentTok{#>                     \}}
+\CommentTok{#>                     out}
+\CommentTok{#>                   \}}
+\CommentTok{#> }
+\CommentTok{#> $neuralnet$fit}
+\CommentTok{#> function(x, y, wts, param, lev, last, classProbs, ...) \{}
+\CommentTok{#>                     colNames <- colnames(x)}
+\CommentTok{#>                     dat <- if(is.data.frame(x)) x else as.data.frame(x)}
+\CommentTok{#>                     dat$.outcome <- y}
+\CommentTok{#>                     form <- as.formula(paste(".outcome ~",paste(colNames, collapse = "+")))}
+\CommentTok{#>                     if(param$layer1 == 0) stop("the first layer must have at least one hidden unit")}
+\CommentTok{#>                     if(param$layer2 == 0 & param$layer2 > 0) stop("the second layer must have at least one hidden unit if a third layer is specified")}
+\CommentTok{#>                     nodes <- c(param$layer1)}
+\CommentTok{#>                     if(param$layer2 > 0) \{}
+\CommentTok{#>                       nodes <- c(nodes, param$layer2)}
+\CommentTok{#>                       if(param$layer3 > 0) nodes <- c(nodes, param$layer3)}
+\CommentTok{#>                     \}}
+\CommentTok{#>                     neuralnet::neuralnet(form, data = dat, hidden = nodes, ...)}
+\CommentTok{#>                   \}}
+\CommentTok{#> }
+\CommentTok{#> $neuralnet$predict}
+\CommentTok{#> function(modelFit, newdata, submodels = NULL) \{}
+\CommentTok{#>                     newdata <- newdata[, modelFit$model.list$variables, drop = FALSE]}
+\CommentTok{#>                     neuralnet::compute(modelFit, covariate = newdata)$net.result[,1]}
+\CommentTok{#>                   \}}
+\CommentTok{#> }
+\CommentTok{#> $neuralnet$prob}
+\CommentTok{#> NULL}
+\CommentTok{#> }
+\CommentTok{#> $neuralnet$tags}
+\CommentTok{#> [1] "Neural Network"}
+\CommentTok{#> }
+\CommentTok{#> $neuralnet$sort}
+\CommentTok{#> function(x) x[order(x$layer1, x$layer2, x$layer3),]}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{vergleich-der-modellguten}{%
+\subsection{Vergleich der Modellgüten}\label{vergleich-der-modellguten}}
+
+Wie gut sagen die Modelle den Test-Datensatz vorher? Vergleichen wir die
+Modelle.
+
+\hypertarget{prognosen-fur-den-test-datensatz-berechnen}{%
+\subsubsection{Prognosen für den Test-Datensatz
+berechnen}\label{prognosen-fur-den-test-datensatz-berechnen}}
+
+Erstellen wir uns einen Datensatz mit den Vorhersagen (und den
+beobachteten Werten):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+
+\NormalTok{test_preds <-}\StringTok{ }\NormalTok{test_df }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(arr_delay) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{lm1_pred =} \KeywordTok{predict}\NormalTok{(lm_fit1, }\DataTypeTok{newdata =}\NormalTok{ test_df))}
+
+\NormalTok{test_preds <-}\StringTok{ }\NormalTok{test_df }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(arr_delay) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{lm1_pred =} \KeywordTok{predict}\NormalTok{(lm_fit1, }\DataTypeTok{newdata =}\NormalTok{ test_df),}
+         \DataTypeTok{rf1_pred =} \KeywordTok{predict}\NormalTok{(rf_fit2, }\DataTypeTok{newdata =}\NormalTok{ test_df),}
+         \DataTypeTok{rf2_pred =} \KeywordTok{predict}\NormalTok{(rf_fit3, }\DataTypeTok{newdata =}\NormalTok{ test_df),}
+         \DataTypeTok{nn1_pred =} \KeywordTok{predict}\NormalTok{(nn_fit1, }\DataTypeTok{newdata =}\NormalTok{ test_df),}
+         \DataTypeTok{nn2_pred =} \KeywordTok{predict}\NormalTok{(nn_fit2, }\DataTypeTok{newdata =}\NormalTok{ test_df))}
+\end{Highlighting}
+\end{Shaded}
+
+Jetzt lassen wir uns typische Kennzahlen der Modellgüte ausgeben:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{postResample}\NormalTok{(}\DataTypeTok{pred =}\NormalTok{ test_preds}\OperatorTok{$}\NormalTok{lm1_pred, }\DataTypeTok{obs =}\NormalTok{ test_preds}\OperatorTok{$}\NormalTok{arr_delay)}
+\CommentTok{#>      RMSE  Rsquared       MAE }
+\CommentTok{#> 0.8895674 0.1924120 0.5383087}
+\end{Highlighting}
+\end{Shaded}
+
+Der Vektor der Modellnamen lautet:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model_names <-}\StringTok{ }\KeywordTok{names}\NormalTok{(test_preds)}
+\end{Highlighting}
+\end{Shaded}
+
+Das wiederholen wir in einer Schleife für jedes Modell:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{test_pred_df <-}\StringTok{ }\NormalTok{test_preds }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{map_df}\NormalTok{(}\OperatorTok{~}\StringTok{ }\KeywordTok{postResample}\NormalTok{(}\DataTypeTok{pred =}\NormalTok{ ., }\DataTypeTok{obs =}\NormalTok{ test_preds}\OperatorTok{$}\NormalTok{arr_delay)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{statistic =} \KeywordTok{c}\NormalTok{(}\StringTok{"RMSE"}\NormalTok{, }\StringTok{"Rsquared"}\NormalTok{, }\StringTok{"MAE"}\NormalTok{)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(statistic, }\KeywordTok{everything}\NormalTok{())}
+
+\NormalTok{test_pred_df}
+\CommentTok{#> # A tibble: 3 x 7}
+\CommentTok{#>   statistic arr_delay lm1_pred rf1_pred rf2_pred nn1_pred nn2_pred}
+\CommentTok{#>   <chr>         <dbl>    <dbl>    <dbl>    <dbl>    <dbl>    <dbl>}
+\CommentTok{#> 1 RMSE              0    0.890    0.630    0.675    0.611    0.518}
+\CommentTok{#> 2 Rsquared          1    0.192    0.633    0.567    0.644    0.727}
+\CommentTok{#> 3 MAE               0    0.538    0.397    0.424    0.296    0.313}
+\end{Highlighting}
+\end{Shaded}
+
+Formen wir diese Tabelle in Langform (Normalform um):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{test_pred_df_t <-}\StringTok{ }\NormalTok{test_pred_df }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{gather}\NormalTok{(}\DataTypeTok{key =} \StringTok{"model_name"}\NormalTok{, }\DataTypeTok{value =} \StringTok{"value"}\NormalTok{, }\OperatorTok{-}\KeywordTok{c}\NormalTok{(statistic))}
+\end{Highlighting}
+\end{Shaded}
+
+Eine andere Form wäre:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{test_pred_df }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{gather}\NormalTok{(}\DataTypeTok{key =} \StringTok{"model_name"}\NormalTok{, }\DataTypeTok{value =} \StringTok{"value"}\NormalTok{, }\OperatorTok{-}\KeywordTok{c}\NormalTok{(statistic)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{spread}\NormalTok{(}\DataTypeTok{key =}\NormalTok{ statistic, }\DataTypeTok{value =}\NormalTok{ value)}
+\CommentTok{#> # A tibble: 6 x 4}
+\CommentTok{#>   model_name   MAE  RMSE Rsquared}
+\CommentTok{#>   <chr>      <dbl> <dbl>    <dbl>}
+\CommentTok{#> 1 arr_delay  0     0        1    }
+\CommentTok{#> 2 lm1_pred   0.538 0.890    0.192}
+\CommentTok{#> 3 nn1_pred   0.296 0.611    0.644}
+\CommentTok{#> 4 nn2_pred   0.313 0.518    0.727}
+\CommentTok{#> 5 rf1_pred   0.397 0.630    0.633}
+\CommentTok{#> 6 rf2_pred   0.424 0.675    0.567}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{bestes-modell-identifizieren}{%
+\subsubsection{Bestes Modell
+identifizieren}\label{bestes-modell-identifizieren}}
+
+Der kleinste RMSE-Wert (nach dem Modell, dass als vorhergesagten Werte
+die beobachteten nimmt, also einen RSME von Null hat):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{test_pred_df_t }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(statistic }\OperatorTok{==}\StringTok{ "RMSE"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{top_n}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DataTypeTok{wt =} \OperatorTok{-}\NormalTok{value)}
+\CommentTok{#> # A tibble: 2 x 3}
+\CommentTok{#>   statistic model_name value}
+\CommentTok{#>   <chr>     <chr>      <dbl>}
+\CommentTok{#> 1 RMSE      arr_delay  0    }
+\CommentTok{#> 2 RMSE      nn2_pred   0.518}
+\end{Highlighting}
+\end{Shaded}
+
+Der größte R\^{}2-Wert:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{test_pred_df_t }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(statistic }\OperatorTok{==}\StringTok{ "Rsquared"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{top_n}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DataTypeTok{wt =}\NormalTok{ value)}
+\CommentTok{#> # A tibble: 2 x 3}
+\CommentTok{#>   statistic model_name value}
+\CommentTok{#>   <chr>     <chr>      <dbl>}
+\CommentTok{#> 1 Rsquared  arr_delay  1    }
+\CommentTok{#> 2 Rsquared  nn2_pred   0.727}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{visualisieren}{%
+\subsubsection{Visualisieren}\label{visualisieren}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{test_pred_df_t }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(statistic) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{is_max =}\NormalTok{ value }\OperatorTok{==}\StringTok{ }\KeywordTok{max}\NormalTok{(value),}
+         \DataTypeTok{is_min =}\NormalTok{ value }\OperatorTok{==}\StringTok{ }\KeywordTok{min}\NormalTok{(value)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{y =}\NormalTok{ model_name, }\DataTypeTok{x =}\NormalTok{ value, }\DataTypeTok{color =}\NormalTok{ is_max, }\DataTypeTok{shape =}\NormalTok{ is_min)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{size =} \DecValTok{5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{statistic, }\DataTypeTok{scales =} \StringTok{"free_x"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position =} \StringTok{"bottom"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics[width=0.7\linewidth]{Fallstudie-nyc-flights_files/figure-latex/unnamed-chunk-50-1} \end{center}
+
+Damit hat das neuronale Netz ``gewonnen''.
+
+\hypertarget{fazit}{%
+\section{Fazit}\label{fazit}}
+
+Es darf nicht vergessen werden, dass wir nur einen Teil des Datensatzes
+verwendet haben - schlicht aus Gründen der komputationalen
+Kostensparung. Insofern sind die Modellgüten nur bedingt für bare Münze
+zu nehmen. Diese Fallstudie hat nur einen Teil der Möglichkeiten einer
+ernsthaften Modellierung aufgenommen, so dass die Ergebnisse schon aus
+diesem Grund mit einem großen Gramm Salz zu betrachten sind. Außerdem
+fanden nur relativ weniger Modell Eingang; es bleibt also offen, ob
+nicht andere Modelle ``besser'' sind. Beim Wort ``besser'' muss man
+immer im Kopf behalten, dass ``besser'' eine \emph{bedingte} Aussage
+ist: \emph{besser} vor dem Hintergrund gewisser anderer Modelle,
+gewisser Transformationen, gewisser Implementierungen, gewisser
+Stichprobenmerkmale, gewisser Implementierungsspezifika und so weiter.
+
+
+\end{document}

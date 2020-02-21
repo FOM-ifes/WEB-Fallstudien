@@ -1,0 +1,15 @@
+id, title, description, tags
+1, "Unterwäsche", "Vergleich des Zeitpunktes des letzten Kaufs von Unterwäsche von Männern und Frauen", "übergreifend"
+2, "Modellierung Preis-Absatz-Funktion", "Lineare und linearisierte Regression zur Schätzung der Preis-Absatz-Funktion", "VWL"
+3, "Garagenflohmarkt und Ungleichheit", "(Einfache) Marktsimulation zur Entstehung von Ungleichheit", "übergreifend"
+4, "Zusammenhang zwischen Alter, Geschlecht und Beziehungsstatus", "Logistische Regresion zur Modellierung, ob eine Person in einer festen Partnerschaft lebt", "übergreifend"
+5, "Bildanalyse", "Komplexitätsreduktion durch Clusteranalyse und Hauptkomponentenanalyse am Beispiel von Bildern", "Dimensionsreduktion, übergreifend"
+6, "Wortassoziation", "Vergleich von Wortassoziationen", "übergreifend"
+7, "Entwicklung Plastikproduktion", "Modellierung zeitliche Entwicklung Plastikproduktion", "übergreifend"
+8, "Klausurpunkte", "Regression zur Mitte am Beispiel Klausurpunkte", "übergreifend"
+9, "Quantitative Tätigkeiten der Wirtschaftspsychologie", "Auswahl an quantitativen Fragestellungen der Wirtschaftspsychologie", "Psychologie, HR"
+10, "Prädiktoren der Lebenserwartung", "Unterscheidet sich die Lebenserwartung in den Kontinenten?", "Lebenserwartung, Geovisualisierung"
+
+
+
+
