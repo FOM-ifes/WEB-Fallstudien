@@ -5,11 +5,11 @@ tags:
 - Lebenserwartung
 - Geovisualisierung
 output:
-  pdf_document:
-    toc: yes
   html_document:
     df_print: paged
     number_sections: yes
+    toc: yes
+  pdf_document:
     toc: yes
 ---
 
@@ -56,10 +56,10 @@ library(tidyverse)
 
 ## Importieren
 
-Gehen wir davon aus, dass die Daten im Arbeitsverzeichnis liegen:
+So können die Daten komfortabel in R importieren:
 
 ```{r load-data}
-exp_raw <- read.csv("life-expectancy-at-age-10.csv")
+exp_raw <- read.csv("https://raw.githubusercontent.com/sebastiansauer/Statistiklehre/main/data/life-expectancy-at-age-10.csv")
 
 head(exp_raw)
 ```
