@@ -1,0 +1,161 @@
+---
+title: "Simulation Gender Pay Gap"
+author: "Karsten Lübke"
+date: "30.11.2020"
+output: html_document
+keywords: Simulation, Kausale Inferenz, Bias, Geschlechtergerechtigkeit
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Vorteil Frauen?
+
+Eine Schlagzeile vom 16.11.2020 lautet ([Link](https://www.zeit.de/news/2020-11/16/frauen-im-vorstand-von-dax-firmen-verdienen-mehr-als-maenner)): 
+
+> Frauen in Firmen-Vorständen sind besser bezahlt als Männer
+
+Kann das sein? Mensch denkt doch immer eher, das Frauen im Job *benachteiligt* werden.
+
+Ja, beides kann gleichzeitig stimmen: Frauen können im Job benachteiligt werden *und* Frauen können als Vorstand ein höheres Gehalt erzielen als Männer.
+
+Warum soll diese kleine, fiktive `R` Simulation zeigen:
+
+# Vorbereitungen 
+
+Laden wir zunächst `mosaic`:
+
+```{r, message=FALSE}
+library(mosaic)
+```
+
+Setzen wir den Zufallszahlengenerator und sagen, dass wir das berufliche Schicksal von $n=10000$ Menschen simulieren wollen:
+
+```{r}
+set.seed(1896)
+
+# Stichprobenumfang
+n <- 10000
+```
+
+# Annahmen
+
+Und hier die qualitativen Annahmen des datengenerierenden Prozesses:
+
+1. Die *Fähigkeit* für den (Vorstands-)Job ist unabhängig vom Geschlecht.
+
+2. Ob jemand in den *Vorstand* kommt hängt ab von der *Fähigkeit* und dem *Geschlecht*. Frauen müssen fähiger sein als Männer - so hier die Annahme.
+
+3. Das *Gehalt*, das eine Person bekommt, hängt ab von der *Fähigkeit* (fähigere Leute verdienen mehr), von der Tätigkeit als *Vorstand* (diese verdienen mehr) und vom *Geschlecht* (Männer verdienen mehr).
+
+Treffen wir zusätzlich noch quantitative Modellannahmen für das Beispiel:
+
+1. `faehigkeit` ist normalverteilt mit $\mu=1000$ und $\sigma=15$.
+
+2. `geschlecht` ist Bernoulliverteilt mit einer Wahrscheinlichkeit von $\pi=0.5$ für eine Frau.
+
+3. Ein Mann kommt ab einer `faehigkeit` größer als 115 in den Vorstand, eine Frau erst ab 130.
+
+4. Das `gehalt` setzt sich zusammen aus `faehigkeit` ($\cdot 10$). Es ist im `vorstand` doppelt so hoch und für Männer noch einmal $5\%$ höher:
+$$\text{gehalt} = \text{faehigkeit} \cdot 10 \cdot \begin{cases}2, \,\text{ist Vorstand} \\ 1, \,\text{sonst} \end{cases} \cdot \begin{cases}1.05, \,\text{ist Mann} \\ 1, \,\text{sonst} \end{cases}$$
+
+# Simulation
+
+Simuliere Daten gemäß des obigen Modells in `R`:
+
+```{r}
+# Faehigkeit N(100,15) verteilt
+faehigkeit <- rnorm(n, mean = 100, sd = 15)
+# Geschlecht B(0.5) verteilt
+geschlecht <- sample(c("w","m"), size = n, replace = TRUE)
+
+# "Aufstieg" ins Management ab einer faehigkeit von 115 für Männer, ab 130 für Frauen
+vorstand <- ifelse(((geschlecht == "m" & faehigkeit > 115) | 
+                      (geschlecht == "w" & faehigkeit > 130)),
+                   "j","n")
+
+# Gehalt: Faehigkeit * 10 * 2 (wenn Vorstand) * 1.05 (wenn Mann)
+gehalt <- faehigkeit * 10 * 
+  ifelse(vorstand == "j", 2, 1) * 
+  ifelse(geschlecht == "m", 1.05, 1)
+```
+
+Zur Klarstellung: Dies ist eine fiktive Simulation, die nur das Phänomen plausibel machen soll!
+
+Beachte: Bei gleicher Fähigkeit im gleichen Job verdienen Männer hier nach Konstruktion $5\%$ **mehr** als Frauen.
+
+# Auswertung
+
+## Fähigkeit und Geschlecht
+
+Wie konstruiert: keine nennenswerten Unterschiede (hier: im arithmetischen Mittelwert, engl. mean) ...
+
+```{r}
+mean(faehigkeit ~ geschlecht)
+```
+
+## Fähigkeit und Vorstand
+
+Wie erwartet: höhere Fähigkeit (welche genau ist hier undefiniert...) im Vorstand - wieder arithmetischer Mittelwert:
+
+```{r}
+mean(faehigkeit ~ vorstand)
+```
+
+## Geschlecht und Vorstand
+
+Und es gibt weniger Frauen als Männer im Vorstand:
+
+```{r}
+tally(vorstand ~ geschlecht)
+```
+
+`r tally(vorstand ~ geschlecht)[1,1]` Männer im Vergleich zu `r tally(vorstand ~ geschlecht)[1,2]` Frauen.
+
+## Gehalt und Geschlecht
+
+Insgesamt verdienen Frauen weniger - im Mittelwert:
+
+```{r}
+mean(gehalt ~ geschlecht)
+```
+
+## Gehalt und Vorstand
+
+Im Vorstand werden höhere Gehälter erzielt:
+
+```{r}
+mean(gehalt ~ vorstand) 
+```
+
+## Gehalt, Geschlecht und Vorstand
+
+Aber, der arithmetiche Mittelwert des Gehalts der Frauen im Vorstand ist höher als der der Männer (im Vorstand):
+
+```{r}
+mean(gehalt ~ geschlecht + vorstand) 
+```
+
+Hier `r round(mean(gehalt ~ geschlecht + vorstand)[2])` im Vergleich zu `r round(mean(gehalt ~ geschlecht + vorstand)[1])` bei den Männern, d.h., $`r round((mean(gehalt ~ geschlecht + vorstand)[2]/mean(gehalt ~ geschlecht + vorstand)[1]-1)*100)`\%$ im Mittelwert *mehr* als Männer (und nicht *weniger*) - im Vorstand.
+
+Warum? Na klar, das Gehalt hängt ja auch von der Fähigkeit (welcher auch immer...) ab, und die musste bei Frauen höher sein um in den Vorstand zu kommen:
+
+```{r}
+mean(faehigkeit ~ geschlecht + vorstand)
+```
+
+# Erklärung
+
+Vorstand ist hier ein sogenannter *Collider* zwischen Geschlecht und Fähigkeit:
+
+$$\text{geschlecht} \rightarrow \text{vorstand} \leftarrow \text{faehigkeit}$$
+Wenn ich auf diesen bedinge, d.h. z.B. weiß, dass eine Person im Vorstand ist, dann weiß ich außerdem, dass eine Frau dafür besonders befähigt sein musste (und daher ein höheres Gehalt hat). Damit wird ein **nicht**-kausaler *biasing-path* zwischen Geschlecht und Gehalt aufgemacht. Die Zahlen stimmen - und sind nur scheinbar wiedersprüchlich.
+
+Noch einmal: Dies war nur ein fiktives Modell, und über die verwendeten Annahmen kann mensch sicherlich disktuieren. Mit Statistik kann beides (höheres Gehalt und Benachteiligung) beschrieben werden.
+
+
+
+
+
+

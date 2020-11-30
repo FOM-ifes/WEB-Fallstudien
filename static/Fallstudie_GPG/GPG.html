@@ -1,0 +1,130 @@
+---
+title: "Simulation Gender Pay Gap"
+author: "Karsten Lübke"
+date: "30.11.2020"
+output: html_document
+keywords: Simulation, Kausale Inferenz, Bias, Geschlechtergerechtigkeit
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+
+<div id="vorteil-frauen" class="section level1">
+<h1>Vorteil Frauen?</h1>
+<p>Eine Schlagzeile vom 16.11.2020 lautet (<a href="https://www.zeit.de/news/2020-11/16/frauen-im-vorstand-von-dax-firmen-verdienen-mehr-als-maenner">Link</a>):</p>
+<blockquote>
+<p>Frauen in Firmen-Vorständen sind besser bezahlt als Männer</p>
+</blockquote>
+<p>Kann das sein? Mensch denkt doch immer eher, das Frauen im Job <em>benachteiligt</em> werden.</p>
+<p>Ja, beides kann gleichzeitig stimmen: Frauen können im Job benachteiligt werden <em>und</em> Frauen können als Vorstand ein höheres Gehalt erzielen als Männer.</p>
+<p>Warum soll diese kleine, fiktive <code>R</code> Simulation zeigen:</p>
+</div>
+<div id="vorbereitungen" class="section level1">
+<h1>Vorbereitungen</h1>
+<p>Laden wir zunächst <code>mosaic</code>:</p>
+<pre class="r"><code>library(mosaic)</code></pre>
+<p>Setzen wir den Zufallszahlengenerator und sagen, dass wir das berufliche Schicksal von <span class="math inline">\(n=10000\)</span> Menschen simulieren wollen:</p>
+<pre class="r"><code>set.seed(1896)
+
+# Stichprobenumfang
+n &lt;- 10000</code></pre>
+</div>
+<div id="annahmen" class="section level1">
+<h1>Annahmen</h1>
+<p>Und hier die qualitativen Annahmen des datengenerierenden Prozesses:</p>
+<ol style="list-style-type: decimal">
+<li><p>Die <em>Fähigkeit</em> für den (Vorstands-)Job ist unabhängig vom Geschlecht.</p></li>
+<li><p>Ob jemand in den <em>Vorstand</em> kommt hängt ab von der <em>Fähigkeit</em> und dem <em>Geschlecht</em>. Frauen müssen fähiger sein als Männer - so hier die Annahme.</p></li>
+<li><p>Das <em>Gehalt</em>, das eine Person bekommt, hängt ab von der <em>Fähigkeit</em> (fähigere Leute verdienen mehr), von der Tätigkeit als <em>Vorstand</em> (diese verdienen mehr) und vom <em>Geschlecht</em> (Männer verdienen mehr).</p></li>
+</ol>
+<p>Treffen wir zusätzlich noch quantitative Modellannahmen für das Beispiel:</p>
+<ol style="list-style-type: decimal">
+<li><p><code>faehigkeit</code> ist normalverteilt mit <span class="math inline">\(\mu=1000\)</span> und <span class="math inline">\(\sigma=15\)</span>.</p></li>
+<li><p><code>geschlecht</code> ist Bernoulliverteilt mit einer Wahrscheinlichkeit von <span class="math inline">\(\pi=0.5\)</span> für eine Frau.</p></li>
+<li><p>Ein Mann kommt ab einer <code>faehigkeit</code> größer als 115 in den Vorstand, eine Frau erst ab 130.</p></li>
+<li><p>Das <code>gehalt</code> setzt sich zusammen aus <code>faehigkeit</code> (<span class="math inline">\(\cdot 10\)</span>). Es ist im <code>vorstand</code> doppelt so hoch und für Männer noch einmal <span class="math inline">\(5\%\)</span> höher:
+<span class="math display">\[\text{gehalt} = \text{faehigkeit} \cdot 10 \cdot \begin{cases}2, \,\text{ist Vorstand} \\ 1, \,\text{sonst} \end{cases} \cdot \begin{cases}1.05, \,\text{ist Mann} \\ 1, \,\text{sonst} \end{cases}\]</span></p></li>
+</ol>
+</div>
+<div id="simulation" class="section level1">
+<h1>Simulation</h1>
+<p>Simuliere Daten gemäß des obigen Modells in <code>R</code>:</p>
+<pre class="r"><code># Faehigkeit N(100,15) verteilt
+faehigkeit &lt;- rnorm(n, mean = 100, sd = 15)
+# Geschlecht B(0.5) verteilt
+geschlecht &lt;- sample(c(&quot;w&quot;,&quot;m&quot;), size = n, replace = TRUE)
+
+# &quot;Aufstieg&quot; ins Management ab einer faehigkeit von 115 für Männer, ab 130 für Frauen
+vorstand &lt;- ifelse(((geschlecht == &quot;m&quot; &amp; faehigkeit &gt; 115) | 
+                      (geschlecht == &quot;w&quot; &amp; faehigkeit &gt; 130)),
+                   &quot;j&quot;,&quot;n&quot;)
+
+# Gehalt: Faehigkeit * 10 * 2 (wenn Vorstand) * 1.05 (wenn Mann)
+gehalt &lt;- faehigkeit * 10 * 
+  ifelse(vorstand == &quot;j&quot;, 2, 1) * 
+  ifelse(geschlecht == &quot;m&quot;, 1.05, 1)</code></pre>
+<p>Zur Klarstellung: Dies ist eine fiktive Simulation, die nur das Phänomen plausibel machen soll!</p>
+<p>Beachte: Bei gleicher Fähigkeit im gleichen Job verdienen Männer hier nach Konstruktion <span class="math inline">\(5\%\)</span> <strong>mehr</strong> als Frauen.</p>
+</div>
+<div id="auswertung" class="section level1">
+<h1>Auswertung</h1>
+<div id="fähigkeit-und-geschlecht" class="section level2">
+<h2>Fähigkeit und Geschlecht</h2>
+<p>Wie konstruiert: keine nennenswerten Unterschiede (hier: im arithmetischen Mittelwert, engl. mean) …</p>
+<pre class="r"><code>mean(faehigkeit ~ geschlecht)</code></pre>
+<pre><code>##        m        w 
+## 100.0101  99.7140</code></pre>
+</div>
+<div id="fähigkeit-und-vorstand" class="section level2">
+<h2>Fähigkeit und Vorstand</h2>
+<p>Wie erwartet: höhere Fähigkeit (welche genau ist hier undefiniert…) im Vorstand - wieder arithmetischer Mittelwert:</p>
+<pre class="r"><code>mean(faehigkeit ~ vorstand)</code></pre>
+<pre><code>##         j         n 
+## 124.58502  97.50777</code></pre>
+</div>
+<div id="geschlecht-und-vorstand" class="section level2">
+<h2>Geschlecht und Vorstand</h2>
+<p>Und es gibt weniger Frauen als Männer im Vorstand:</p>
+<pre class="r"><code>tally(vorstand ~ geschlecht)</code></pre>
+<pre><code>##         geschlecht
+## vorstand    m    w
+##        j  767  102
+##        n 4190 4941</code></pre>
+<p>767 Männer im Vergleich zu 102 Frauen.</p>
+</div>
+<div id="gehalt-und-geschlecht" class="section level2">
+<h2>Gehalt und Geschlecht</h2>
+<p>Insgesamt verdienen Frauen weniger - im Mittelwert:</p>
+<pre class="r"><code>mean(gehalt ~ geschlecht)</code></pre>
+<pre><code>##        m        w 
+## 1250.277 1024.435</code></pre>
+</div>
+<div id="gehalt-und-vorstand" class="section level2">
+<h2>Gehalt und Vorstand</h2>
+<p>Im Vorstand werden höhere Gehälter erzielt:</p>
+<pre class="r"><code>mean(gehalt ~ vorstand) </code></pre>
+<pre><code>##         j         n 
+## 2600.4458  997.0496</code></pre>
+</div>
+<div id="gehalt-geschlecht-und-vorstand" class="section level2">
+<h2>Gehalt, Geschlecht und Vorstand</h2>
+<p>Aber, der arithmetiche Mittelwert des Gehalts der Frauen im Vorstand ist höher als der der Männer (im Vorstand):</p>
+<pre class="r"><code>mean(gehalt ~ geschlecht + vorstand) </code></pre>
+<pre><code>##       m.j       w.j       m.n       w.n 
+## 2587.3449 2698.9597 1005.5202  989.8664</code></pre>
+<p>Hier 2699 im Vergleich zu 2587 bei den Männern, d.h., <span class="math inline">\(4\%\)</span> im Mittelwert <em>mehr</em> als Männer (und nicht <em>weniger</em>) - im Vorstand.</p>
+<p>Warum? Na klar, das Gehalt hängt ja auch von der Fähigkeit (welcher auch immer…) ab, und die musste bei Frauen höher sein um in den Vorstand zu kommen:</p>
+<pre class="r"><code>mean(faehigkeit ~ geschlecht + vorstand)</code></pre>
+<pre><code>##       m.j       w.j       m.n       w.n 
+## 123.20690 134.94798  95.76383  98.98664</code></pre>
+</div>
+</div>
+<div id="erklärung" class="section level1">
+<h1>Erklärung</h1>
+<p>Vorstand ist hier ein sogenannter <em>Collider</em> zwischen Geschlecht und Fähigkeit:</p>
+<p><span class="math display">\[\text{geschlecht} \rightarrow \text{vorstand} \leftarrow \text{faehigkeit}\]</span>
+Wenn ich auf diesen bedinge, d.h. z.B. weiß, dass eine Person im Vorstand ist, dann weiß ich außerdem, dass eine Frau dafür besonders befähigt sein musste (und daher ein höheres Gehalt hat). Damit wird ein <strong>nicht</strong>-kausaler <em>biasing-path</em> zwischen Geschlecht und Gehalt aufgemacht. Die Zahlen stimmen - und sind nur scheinbar wiedersprüchlich.</p>
+<p>Noch einmal: Dies war nur ein fiktives Modell, und über die verwendeten Annahmen kann mensch sicherlich disktuieren. Mit Statistik kann beides (höheres Gehalt und Benachteiligung) beschrieben werden.</p>
+</div>
