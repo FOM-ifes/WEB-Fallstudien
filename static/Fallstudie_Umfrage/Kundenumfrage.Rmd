@@ -18,7 +18,7 @@ Eine Einzelhändlerin möchte zur Marketingsteuerung ihre Kunden besser kennenle
 
 > Wie oft kaufen Sie bei uns ein?
 
-Das Marktforschungsinstitut startet motiviert und befragt innerhalb über eine ganze Woche verteilt verteilt $1000$ Kundinnen und Kunden und präsentiert das Ergebnis. 
+Das Marktforschungsinstitut startet motiviert und befragt im Laden über eine Woche verteilt $1000$ Kundinnen und Kunden und präsentiert das Ergebnis. 
 
 Die Auftraggeberin freut sich über das Ergebnis - aber leider ist es systematisch verzerrt ...
 
@@ -140,7 +140,7 @@ Das Problem ist, dass die Auswahlwahrscheinlichkeit nicht unabhängig von der An
 
 $$\text{Stichprobe} \leftarrow \text{Kaufverhalten} \rightarrow \text{Antwort}$$
 
-Uns liegen nur die Daten der Stichprobe vor, d.h.
+Uns liegen nur die Daten der Stichprobe, d.h. für die Beobachtungen der Population für die ${\text{Stichprobe}=1}$ gilt, vor, d.h.
 
 $$\boxed{\text{Stichprobe}=1} \leftarrow \text{Kaufverhalten} \rightarrow \text{Antwort}.$$
 Uns liegen mit höherer Wahrscheinlichkeit Daten von Personen in der Stichprobe vor, die öfter einkaufen und dies auch so antworten.

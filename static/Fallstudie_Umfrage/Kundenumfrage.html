@@ -437,7 +437,7 @@ summary {
 <blockquote>
 <p>Wie oft kaufen Sie bei uns ein?</p>
 </blockquote>
-<p>Das Marktforschungsinstitut startet motiviert und befragt innerhalb über eine ganze Woche verteilt verteilt <span class="math inline">\(1000\)</span> Kundinnen und Kunden und präsentiert das Ergebnis.</p>
+<p>Das Marktforschungsinstitut startet motiviert und befragt im Laden über eine Woche verteilt <span class="math inline">\(1000\)</span> Kundinnen und Kunden und präsentiert das Ergebnis.</p>
 <p>Die Auftraggeberin freut sich über das Ergebnis - aber leider ist es systematisch verzerrt …</p>
 </div>
 <div id="einkaufsverhalten" class="section level1">
@@ -531,7 +531,7 @@ gf_histogram( ~ mean, data = Bootvtlg)</code></pre>
 <h2>Selection Bias</h2>
 <p>Das Problem ist, dass die Auswahlwahrscheinlichkeit nicht unabhängig von der Antwort auf die Frage ist, da beides vom Kaufverhalten abhängt:</p>
 <p><span class="math display">\[\text{Stichprobe} \leftarrow \text{Kaufverhalten} \rightarrow \text{Antwort}\]</span></p>
-<p>Uns liegen nur die Daten der Stichprobe vor, d.h.</p>
+<p>Uns liegen nur die Daten der Stichprobe, d.h. für die Beobachtungen der Population für die <span class="math inline">\({\text{Stichprobe}=1}\)</span> gilt, vor, d.h.</p>
 <p><span class="math display">\[\boxed{\text{Stichprobe}=1} \leftarrow \text{Kaufverhalten} \rightarrow \text{Antwort}.\]</span> Uns liegen mit höherer Wahrscheinlichkeit Daten von Personen in der Stichprobe vor, die öfter einkaufen und dies auch so antworten.</p>
 <p>Bei einer zufälligen Stichprobe erfolgt die Erhebung unabhängig vom Kaufverhalten, d.h. der Pfeil vom Kaufverhalten zur Auswahl als Stichprobe wird gestrichen:</p>
 <p><span class="math display">\[\boxed{\text{Stichprobe}=1} \not\leftarrow \text{Kaufverhalten} \rightarrow \text{Antwort}\]</span> Wir lernen über die Tatsache, dass die Person Teil der Stichprobe ist nichts über die Antwort.</p>
