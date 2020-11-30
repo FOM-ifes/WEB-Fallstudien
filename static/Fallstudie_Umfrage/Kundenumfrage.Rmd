@@ -1,0 +1,153 @@
+---
+title: "Kundenbefragung"
+author: "Karsten Lübke"
+date: "30.11.2020"
+output: html_document
+keywords: Umfrage, Verzerrung, Simulation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+*Nach einer wahren Begebenheit ...*
+
+# Kundenbefragung
+
+Eine Einzelhändlerin möchte zur Marketingsteuerung ihre Kunden besser kennenlernen und beauftragt ein Institut mit einer Kundenbefragung. Einer der Fragen:
+
+> Wie oft kaufen Sie bei uns ein?
+
+Das Marktforschungsinstitut startet motiviert und befragt innerhalb über eine ganze Woche verteilt verteilt $1000$ Kundinnen und Kunden und präsentiert das Ergebnis. 
+
+Die Auftraggeberin freut sich über das Ergebnis - aber leider ist es systematisch verzerrt ...
+
+# Einkaufsverhalten
+
+Viele Kunden kaufen eher selten ein, wenige eher oft - das gute alte Paretoprinzip.
+
+Modellieren und simulieren kann man Kauffrequenzen z.B. Hilfe des Pareto/NBD Modells (siehe z.B. [hier](https://doi.org/10.1016/j.ijresmar.2020.09.002)):
+
+```{r, message=FALSE}
+# Paket laden
+library(mosaic)
+# Zufallszahlengenerator setzen
+set.seed(1896)
+# Kunden insgesamt
+N <- 25000
+
+# Heterogenität der Kunden, Gammaverteilt
+kunden <- rgamma(n = N, shape = 10)
+# Kauffrequenz, Poissonverteilt
+population <- rpois(n = N, lambda = kunden)
+```
+
+Schauen wir uns die *wahre* Kauffrequenz in der Population an:
+
+```{r}
+# Säulendiagramm
+gf_bar( ~ population)
+# Kennzahlen
+favstats( ~population)
+```
+
+In der (simulierten) Population gilt für den Mittelwert der Einkaufshäufigkeit: 
+
+$$\mu=`r round(mean( ~ population),2)`\approx 10$$
+
+## Gelegenheitsstichprobe
+
+Dadurch, dass die Kundinnen und Kunden im Laden befragt wurden, haben Sie unterschiedliche Wahrscheinlichkeiten befragt zu werden: die, die häufiger einkaufen haben eine höhere Auswahlwahrscheinlichkeit als die, die seltener einkaufen. 
+
+```{r}
+# Stichprobenumfang
+n <- 1000
+
+# Auswahlwahrscheinlichkeit proportional zur Kaufhäufigkeit
+stipro_gelegenheit <- sample(population, size = n, prob = population)
+```
+
+Und das Ergebnis, was das Marktforschungsinstitut - und die Chefin - sieht, und worauf die Entscheidungen basieren ist verzerrt:
+
+```{r}
+# Säulendiagramm
+gf_bar( ~ stipro_gelegenheit)
+# Kennzahlen
+favstats( ~ stipro_gelegenheit)
+```
+
+D.h. der Mittelwert in der Stichprobe ist höher als in Wirklichkeit - da Vielkäufer\*innen bevorzugt ausgewählt, d.h. Teil de Stichprobe wurden:
+
+$$\bar{x}=`r round(mean( ~ stipro_gelegenheit),2)`$$
+
+# Zufällige Stichprobe
+
+Bei einer zufälligen Stichprobe hätte jede Kundin die gleiche Wahrscheinlichkeit befragt zu werden. Die Auswahlwahrscheinlichkeit wäre unabhängig von der Kauffrequenz:
+
+```{r}
+# Auswahlwahrscheinlichkeit für alle gleich
+stipro_zufall <- sample(population, size = n)
+# Säulendiagramm
+gf_bar( ~ stipro_zufall)
+# Kennzahlen
+favstats( ~ stipro_zufall)
+```
+
+Der Schätzwert auf Basis der zufälligen Stichprobe ist nicht systematisch verzerrt:
+
+$$\bar{x}=`r round(mean( ~ stipro_zufall),2)`$$
+
+## Stichprobenumfang
+
+Das Problem einer möglichen systematischen Verzerrung, eines Bias, bei einer nicht-zufälligen Stichprobe kann i.d.R. nicht über größere Stichproben gelöst werden:
+
+```{r}
+# Stichprobenumfang
+n <- 10000
+# Auswahlwahrscheinlichkeit proportional zur Kaufhäufigkeit
+stipro_gelegenheit <- sample(population, size = n, prob = population)
+# Mittelwert
+mean(~stipro_gelegenheit)
+```
+
+Während schon kleine, zufällige Stichproben unverzerrt sind:
+
+```{r}
+# Stichprobenumfang
+n <- 100
+# Auswahlwahrscheinlichkeit für alle gleich
+stipro_zufall <- sample(population, size = n)
+# Mittelwert
+mean(~stipro_zufall)
+```
+
+
+$$|\hat{\mu}_{\text{Zufallsstichprobe } n=100 }-\mu| = |`r round(mean( ~ population),2)`-`r round(mean( ~ stipro_zufall),2)`|< |`r round(mean( ~ population),2)`-`r round(mean( ~ stipro_gelegenheit),2)`|=|\hat{\mu}_{\text{Gelegenheitsstichprobe } n=10000 }-\mu|$$
+
+
+Natürlich lösen Konfidenzintervalle u.ä. das Problem der Verzerrung nicht:
+
+```{r}
+# Bootstrapping
+Bootvtlg <- do(10000)* mean( ~ resample(stipro_gelegenheit))
+gf_histogram( ~ mean, data = Bootvtlg)
+confint(Bootvtlg)
+```
+
+## Selection Bias
+
+Das Problem ist, dass die Auswahlwahrscheinlichkeit nicht unabhängig von der Antwort auf die Frage ist, da beides vom Kaufverhalten abhängt:
+
+$$\text{Stichprobe} \leftarrow \text{Kaufverhalten} \rightarrow \text{Antwort}$$
+
+Uns liegen nur die Daten der Stichprobe vor, d.h.
+
+$$\boxed{\text{Stichprobe}=1} \leftarrow \text{Kaufverhalten} \rightarrow \text{Antwort}.$$
+Uns liegen mit höherer Wahrscheinlichkeit Daten von Personen in der Stichprobe vor, die öfter einkaufen und dies auch so antworten.
+
+Bei einer zufälligen Stichprobe erfolgt die Erhebung unabhängig vom Kaufverhalten, d.h. der Pfeil vom Kaufverhalten zur Auswahl als Stichprobe wird gestrichen:
+
+$$\boxed{\text{Stichprobe}=1} \not\leftarrow \text{Kaufverhalten} \rightarrow \text{Antwort}$$
+Wir lernen über die Tatsache, dass die Person Teil der Stichprobe ist nichts über die Antwort.
+
+$$\boxed{\text{Stichprobe}=1} \quad \text{Kaufverhalten} \rightarrow \text{Antwort}.$$

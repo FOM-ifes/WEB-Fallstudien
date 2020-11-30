@@ -109,3 +109,12 @@ alt = "Fallstudie '12' - Gender Pay Gap"
 description = "Simulation zur Erklärung eines scheinbaren Widerspruchs"
 url = "Fallstudie_GPG/GPG.html"
 #zipurl = "Fallstudie_GPG/GPG.zip"
+
+[[items]]
+title = "Fallstudie 13"
+image = "images/full/Survey.png"
+thumb = "images/thumbs/Survey.png"
+alt = "Fallstudie '13' - Kundenumfrage"
+description = "Verzerrung bei einer Gelegenheitsstichprobe"
+url = "Fallstudie_Umfrage/Kundenumfrage.html"
+#zipurl = "Fallstudie_GPG/GPG.zip"
