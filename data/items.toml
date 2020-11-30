@@ -103,8 +103,8 @@ url = "Fallstudie_NYCFlights/Fallstudie-nyc-flights.html"
 
 [[items]]
 title = "Fallstudie 12"
-image = "images/full/12.png"
-thumb = "images/thumbs/12.png"
+image = "images/full/GPG.png"
+thumb = "images/thumbs/GPG.png"
 alt = "Fallstudie '12' - Gender Pay Gap"
 description = "Simulation zur Erklärung eines scheinbaren Widerspruchs"
 url = "Fallstudie_GPG/GPG.html"
