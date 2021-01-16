@@ -151,7 +151,7 @@ p.value <- prop(~ (diffmean <= diff.stipro), data = Nullvtlg)
 p.value
 ```
 
-Der Anteil der $10000$ Simulationen mit mindestens so großen Abweichungen wie in der Stichprobe, wenn die Nullhypothese in der Population stimmt, liegt bei `r p.value`, d.h. der p-Wert ist kleiner als $1/10000$. 
+Der Anteil der $10000$ Simulationen mit mindestens so großen negativen Abweichungen wie in der Stichprobe, wenn die Nullhypothese in der Population stimmt, liegt bei $`r p.value`$, d.h. der p-Wert ist kleiner als $0.1\%$. 
 
 Der Unterschied ist damit *signifikant*. Ist er auch relevant? Betrachten wir dazu die Effektgröße Cohens d:
 
@@ -207,6 +207,7 @@ library(dabestr)
 dabest(uwaesche, Geschlecht, Tage, 
          idx = c("m", "w"), 
          paired = FALSE) %>%
+  mean_diff() %>%
   plot()
 
 ```
