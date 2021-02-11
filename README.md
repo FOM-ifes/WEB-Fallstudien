@@ -3,8 +3,8 @@
 [![Netlify Status](https://api.netlify.com/api/v1/badges/3fb0c409-348c-4c89-b5d1-a02bdf0bf2a1/deploy-status)](https://app.netlify.com/sites/fallstudien/deploys)
 
 Maintainer: 
-- [Norman Markgraf](https://github.com/NMarkgraf)
 - [Sebastian Sauer](https://github.com/sebastiansauer)
+- [Norman Markgraf](https://github.com/NMarkgraf) - Email: [nmarkgraf@hotmail.com](mailto:nmarkgraf@hotmail.com?subject=GitHub-Fallstudien)
 
 
 In diesem Mini-Projekt wird eine kleine "Kachel-Webseite"" erstellt werden, auf der Fallstudien gesammelt werden können.
